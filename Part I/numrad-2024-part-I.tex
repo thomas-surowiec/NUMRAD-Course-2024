@@ -148,7 +148,14 @@ NUMRAD 2024, June 12, 2024}}
 \begin{center}\Large
 Section 1: \\
 Review and Introduction
+\end{center}\bigskip
+
+\visible<2->{
+\begin{center}\Large
+Take away \#1:\\
+\textit{What are the basic structures of PDE-constrained optimization under uncertainty? }
 \end{center}
+}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -159,34 +166,34 @@ Review and Introduction
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}\frametitle{A Basic Workflow}
-\begin{exampleblock}{}
-The basic workflow from modeling to numerical solution is as follows.
-\begin{itemize}
-\item Modeling: PDE, additional constraints, and objective function.
+% \begin{frame}\frametitle{A Basic Workflow}
+% \begin{exampleblock}{}
+% The basic workflow from modeling to numerical solution is as follows.
+% \begin{itemize}
+% \item Modeling: PDE, additional constraints, and objective function.
 
-\item Theory: control-to-state map, existence and optimality conditions.
+% \item Theory: control-to-state map, existence and optimality conditions.
 
-\item Algorithms: function space-based methods (optimize-then-discretize).
+% \item Algorithms: function space-based methods (optimize-then-discretize).
 
-\item Numerical Solution: discretize (FD, FEM, wavelets, NN,...) and solve.
-\end{itemize}
-\end{exampleblock}
-\visible<2->{
-\begin{exampleblock}{}
-Incorporating uncertainty into this workflow adds several new tasks:
-\begin{itemize}
-\item Modeling: {\color{Red} where/how to include random inputs, model risk preference.}
+% \item Numerical Solution: discretize (FD, FEM, wavelets, NN,...) and solve.
+% \end{itemize}
+% \end{exampleblock}
+% \visible<2->{
+% \begin{exampleblock}{}
+% Incorporating uncertainty into this workflow adds several new tasks:
+% \begin{itemize}
+% \item Modeling: {\color{Red} where/how to include random inputs, model risk preference.}
 
-\item Theory: {\color{Red}  measurability, integrability, \& differentiability: an ``extra step''.}
+% \item Theory: {\color{Red}  measurability, integrability, \& differentiability: an ``extra step''.}
 
-\item Algorithms: {\color{Red}  sample uncertainty as-you-go versus before-you-go.}
+% \item Algorithms: {\color{Red}  sample uncertainty as-you-go versus before-you-go.}
 
-\item Numerical Solution: {\color{Red} when to stop, how to interpret the solution.}
-\end{itemize}
-\end{exampleblock}
-}
-\end{frame}
+% \item Numerical Solution: {\color{Red} when to stop, how to interpret the solution.}
+% \end{itemize}
+% \end{exampleblock}
+% }
+% \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -194,15 +201,15 @@ Incorporating uncertainty into this workflow adds several new tasks:
 \begin{center}\Large
 Section 1\\
 Part I:\\
-Modeling: Deterministic and stochastic settings.
+Modeling deterministic and stochastic settings.
 \end{center}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Modeling}
-\begin{frame}\frametitle{Choosing the right PDE and Objective}
+\subsection{Models}
+\begin{frame}\frametitle{Choosing the right PDE and objective}
 
 \begin{example}[Optimization of Optoelectronics]
 \centering
@@ -298,29 +305,34 @@ Modeling: Deterministic and stochastic settings.
 \begin{itemize}
 \item ...know all the real input parameters?
 \item ...have I estimated them from data? 
+\item ...fully \textbf{trust} it?
 \end{itemize}
-\begin{itemize}
-\item What if I don't fully \textbf{trust} the ``true'' model? 
+% \begin{itemize}
+% \item What if I don't fully \textbf{trust} the ``true'' model? 
 % \item Can I use a simpler model by replacing the inputs with \textbf{random parameters} after \textbf{learning} their distributions from \textbf{data}?
-\end{itemize}
+% \end{itemize}
 \end{minipage}
-\begin{minipage}{0.4\textwidth}
+\begin{minipage}{0.5\textwidth}
     \begin{figure}
         \centering
         \includegraphics[width=\textwidth,keepaspectratio]{Part I/figures/brain-mesh.png}
-         \caption{Tracer concentration estimates (J. Riseth et al \cite{})}
+         \caption{\smaller Tracer concentrations (courtesy of J. Riseth)}
         \label{fig:enter-label}
     \end{figure}
 \end{minipage}
-\begin{itemize}
-\item We don't wish to \alert{quantify uncertainty}, but \alert{make optimal decisions} in the face of uncertainty.
-\end{itemize}
 \end{exampleblock}
 
-\visible<2->{
+\only<2>{
 \begin{exampleblock}{}
 \centering
-These thoughts lead to the focus of our course:\\ \textbf{Optimizing PDEs with Random Inputs.}
+We don't wish to \alert{quantify uncertainty}, but to \alert{make decisions} to \alert{minimize uncertainty}.
+\end{exampleblock}
+}
+
+\only<3>{
+\begin{exampleblock}{}
+\centering
+This leads to the focus of our course:\\ \textbf{PDE-Constrained Optimization under Uncertainty.}
 \end{exampleblock}
 }
 \end{frame}
@@ -332,17 +344,17 @@ These thoughts lead to the focus of our course:\\ \textbf{Optimizing PDEs with R
 % \end{exampleblock}
 
 
+% \visible<1->{
+% \begin{exampleblock}{}
+% \begin{itemize}
+% \item Topology optimization: 
+% $z$ $\sim$ material density (takes values between 0,1), 
+% $\int_{D} z \ \mathrm{d}x \le \gamma$.
+% \item State constraint: $T$ max.\ allowable deflection, temperature, current, etc.
+% \end{itemize}
+% \end{exampleblock}
+% }
 \visible<1->{
-\begin{exampleblock}{}
-\begin{itemize}
-\item Topology optimization: 
-$z$ $\sim$ material density (takes values between 0,1), 
-$\int_{D} z \ \mathrm{d}x \le \gamma$.
-\item State constraint: $T$ max.\ allowable deflection, temperature, current, etc.
-\end{itemize}
-\end{exampleblock}
-}
-\visible<2->{
 \begin{exampleblock}{}
 Domain $D \subset \mathbb R^n$ open, bounded;
 $a, b, T : D \to \mathbb R$ $a < b$;
@@ -374,16 +386,17 @@ u(x) \le T \text{ for a.e. } x \in D.
 \begin{exampleblock}{}
 After incorporating uncertainty:
 \begin{itemize}
-\item The decision/design/control $z : D \to \mathbb R$ is made \textbf{before the realization of of uncertainty}.
+\item The decision/design/control $z : D \to \mathbb R$ is made \textbf{before the realization of uncertainty}.
 \item The state is a \textbf{random element} $u : (\Omega,\mathcal{F},\mathbb P) \to X(D)$; $X(D)$ function space over $D$.
 \visible<2->{
 \item If we consider a time-dependent decision-making process, then $z_t : D \to \mathbb R$ may become uncertain. Think: feedback control.}
 \visible<3->{
-\item State constraints in a random setting can be very challenging: See Caroline Geiersbach's presentation!
+\item Stochastic state constraints are very challenging: See C.\ Geiersbach's presentation!
 }
 \end{itemize}
 \end{exampleblock}
-% \visible<3->{
+
+\visible<3->{
 % \begin{center}
 %     \begin{minipage}{0.25\textwidth}
 % \includegraphics[width=\linewidth]{figures/z_my_1000.pdf}
@@ -403,7 +416,13 @@ After incorporating uncertainty:
 %      \end{subfigure}
 %      \begin{subfigure}[b]{0.5\linewidth}
 %      \centering
-%      \includegraphics[width=\linewidth]{figures/oos_my_g1000_M2000.pdf}
+\begin{figure}[b]
+    \centering
+    \includegraphics[width=0.3\linewidth]{figures/oos_my_g1000_M2000.pdf}
+    % \caption{A}
+    %\label{fig:enter-label}
+\end{figure}
+     % \includegraphics[width=\linewidth]{figures/oos_my_g1000_M2000.pdf}
 %      \caption{}
 %      \label{fig:oos-states}
 %  	\end{subfigure}
@@ -412,11 +431,11 @@ After incorporating uncertainty:
 %   % 2.3 \% of cases violate the bound.}
 %         \label{fig:saa-ssn}
 % \end{figure}
-% }
+}
 
 \end{frame}
 
-\begin{frame}\frametitle{Choosing an Objective}
+\begin{frame}\frametitle{Choosing an objective}
 
 % \only<1>{
 % \begin{example}[Optimization of Optoelectronics]
@@ -455,6 +474,13 @@ J(z) := (F, S(z))_{L^2(D)} + (g,S(z))_{L^2(\partial D)}
 }
 \end{frame}
 
+\begin{frame}\frametitle{}
+\begin{center}\Large
+Take away \#2:\\
+\textit{What do we \alert{actually} control in OUU?}
+\end{center}
+\end{frame}
+
 \begin{frame}\frametitle{Dealing with random objectives}
 \begin{exampleblock}{}
 Using \textbf{random PDE}, means our objective becomes \textbf{implicitly random}:
@@ -487,25 +513,30 @@ Using \textbf{random PDE}, means our objective becomes \textbf{implicitly random
 \begin{frame}\frametitle{Understanding OUU. An Example.}
 \begin{exampleblock}{}
 \begin{itemize}
-\item $f(x,\omega) := \frac{1}{2}(\alpha_1(\omega) x_1^2 + \alpha_2(\omega) x_2^2) - (\beta_1(\omega) x_1 + \beta_2(\omega) x_2).$
-\item $\alpha_i \sim U(0,1)$, $\beta_i \sim N(0,1)$ for $i=1,2$.
-\item The stochastic optimization problem 
+\item $f(x,\omega) := \frac{1}{2}(\alpha_1(\omega) x_1^2 + \alpha_2(\omega) x_2^2) - (\beta_1(\omega) x_1 + \beta_2(\omega) x_2),$
+$\alpha_i \sim U(0,1)$, $\beta_i \sim N(0,1)$. 
+\item 
 $
 \min_{x \in \mathbb R^2 } \mathbb E[f(x)]
 $
-has unique solution $(x^{\star}_1,x^{\star}_2) = (0,0)$. 
+has the unique solution $(x^{\star}_1,x^{\star}_2) = (0,0)$. 
 \item $f(x^{\star},\cdot)$ is a degenerate r.v.: $\mathbb P(\left\{\omega \in \Omega \; \left| f(x^{\star},\omega) = 0\right.\right\}) = 1$
 \end{itemize}
 \begin{center}
-    \begin{minipage}{0.6\textwidth}
-        Solving iteratively, the sample cdf's converge:
-    \end{minipage}
+    % \begin{minipage}{0.6\textwidth}
+    %     Solving iteratively, the sample cdf's converge:
+    % \end{minipage}
     \begin{minipage}{5cm}
         \includegraphics[width=\textwidth, keepaspectratio]{Part I/figures/empirical_cdfs_obj.pdf}
     \end{minipage}
 \end{center}
-
 \end{exampleblock}
+\only<2>{
+\begin{exampleblock}{}
+    \centering
+    The best we can do is \alert{shape the distribution} of the objective.
+\end{exampleblock}
+}
 \end{frame}
 
 \begin{frame}\frametitle{Shaping the Distribution}
@@ -530,10 +561,289 @@ For now, we will consider the objectives $\risk[\mathcal{J}(S(z))]$ and specify 
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Modeling Risk}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}\frametitle{}
 \begin{center}\Large
 Section 1\\
 Part II:\\
+Risk-Averse Decision Making 
+\end{center}\bigskip
+
+\visible<2->{
+\begin{center}\Large
+Take away \#3:\\
+\textit{What do we mean by \alert{risk-averse}? }
+\end{center}
+}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}\frametitle{Robust Optimization}
+\visible<1->{
+\begin{exampleblock}{Motivation}
+\begin{itemize}
+\item An \textbf{uncertainty region} $\Omega$ is known, but \alert{no data} for statistical estimation is available.
+\item An \textbf{uncertainty region} $\Omega$ is known and data is available, but there is \alert{no room for error}.
+\item An \textbf{uncertainty region} $\Omega$ is known and data is available, but the \alert{$\mathrm{dim}\, \Omega$ is intractable}.
+\item The functional $\risk$ should then take the form  
+\[
+\risk[X] := \sup_{\omega \in \Omega} X(\omega).
+\]
+\end{itemize}
+\end{exampleblock}
+}
+\visible<2->{
+\begin{exampleblock}{}
+\begin{itemize}
+\item The robust PDE-constrained optimization problem takes the general form:
+\begin{equation}\label{eq:robust}
+\min_{z \in \Zad}\left\{ \wp(z) + \sup_{\omega \in \Omega} \mathcal{J}(S(z))(\omega) \right\}
+\end{equation}
+\item \alert{Hard to solve}: A nonsmooth, possibly nonconvex, $\infty$-dimensional problem. 
+% %\item The formulation might be overly restrictive/too pessimistic.
+% \item Existing approaches transform \eqref{eq:robust} into a mathematical program with equilibrium constraints (MPEC). MPECs with PDE operators are very hard to solve numerically.
+\end{itemize}
+\end{exampleblock}
+}
+\end{frame}
+
+% \begin{frame}\frametitle{Stochastic Order Constraints}
+% \vspace{-2ex}
+% \begin{exampleblock}{Motivation}
+% \begin{itemize}
+% \visible<1->{
+% \item A \textbf{complete probability space} $(\Omega,\cF, \bbp)$ is available.
+% \item A \textbf{benchmark} decision, design, stationary control $z_d \in Z$ or objective value $c$ is given.
+% }
+% \visible<2->{
+% \item The risk-averse PDE-constrained optimization problem might take the general form:
+% \begin{equation}\label{eq:prob}
+% \min_{z \in \Zad} \left\{ \wp(z) + \mathbb E \left[\mathcal{J}(S(z)) \right] : \mathbb P\left\{\cJ(S(z)) < \cJ(S(z_{d}))\right\} \ge p \right\} \quad p \in (0,1).\vspace{-4ex}
+% \end{equation}
+% }
+% \end{itemize}
+% \visible<3->{
+% \begin{center}
+%     \textit{Find $z^{\star} \in \Zad$ that \alert{performs well on average} such that the random variable $\omega \mapsto \mathcal{J}(S(z^{\star}))(\omega) - \cJ(S(z_{d}))(\omega)$ is \alert{negative with probability $p$.}
+%     }    
+% \end{center}
+% }
+% \end{exampleblock}
+% \visible<4->{
+% \begin{exampleblock}{}
+% Many variants available: 
+% \begin{itemize}
+% \item Replace $\cJ(S(z_{d}))$ with a constant $c$ or choose more than one/all $p \in (0,1)$.
+% \item Compare \alert{tails}  of $\cJ(S(z))$ to $\cJ(S(z_{d}))$ over a range of values.
+% \item The constraint function $\varphi(z) := \mathbb P\left\{\cJ(S(z)) \le c \right\}$ is highly nontrivial.
+% \end{itemize}
+% \end{exampleblock}
+% }
+% \end{frame}
+
+
+\begin{frame}\frametitle{Minimizing the Expectation}
+\visible<1->{
+\begin{exampleblock}{Optimization with Risk Measures}
+\begin{itemize}
+\item The risk-averse PDE-constrained optimization problem takes the general form:
+\begin{equation}\label{eq:prob}
+\min_{z \in \Zad} \left\{ \wp(z) + \risk \left[\mathcal{J}(S(z)) \right] \right\}
+\end{equation}
+\item $\risk$ should ``shape'' the distribution of the objective function at an optimal solution $z^{\star}$. 
+\end{itemize}
+\end{exampleblock}
+}
+\visible<2->{
+\begin{exampleblock}{Traditional Approach: $\risk = \mathbb E$ (``risk neutral case'')}
+\begin{itemize}
+\visible<2->{
+\item Optimize to achieve best performance \textbf{on average}.
+\item Q: \alert{What could possibly go wrong?} 
+}
+\visible<3->{\item A: Does not account for potentially catastrophic tail events.}
+\visible<4->{\item Often consider: $\nu \bbe + (1-\nu) \risk$ with $\risk$ being something other than $\mathbb E$, $\nu \in (0,1)$, instead.}
+\end{itemize}
+\end{exampleblock}
+}
+\end{frame}
+
+\begin{frame}\frametitle{Mitigating Risk using Risk Measures}
+
+
+\begin{exampleblock}{Traditional Mean-Var Approach: $\risk = \nu \mathbb E+(1-\nu) \mathbb V$}
+\begin{itemize}
+\visible<1->{
+\item Maximize \textbf{average performance} vs.\ \textbf{minimize variance} $\mathbb V[X] = \mathbb E[(X-\mathbb E[X])^2]$ 
+\item Q: \alert{What could possibly go wrong?} 
+}
+\visible<2->{
+\item A:  $\mathbb V$ may penalize favorable outlier situations: We are happy if $\cJ(S(z))(\omega) \ll \cJ(S(y))(\omega)$.
+\item $\mathbb V$ is not monotone w.r.t.\ the partial order on ${L}^{1}(\Omega,\cF, \bbp)$: The pointwise bound
+\[
+\cJ(S(z))(\omega) \le \cJ(S(y))(\omega),\; \Pae \omega \in \Omega
+\]
+does not guarantee $\mathbb V(\cJ(S(z))) \le \mathbb V(\cJ(S(y)))$. 
+\item This is not seen to be favorable for optimization.
+}
+\end{itemize}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}\frametitle{Mitigating Risk using Risk Measures}
+\begin{exampleblock}{Minimize the $\beta$-Quantile: $\risk[X] = \inf\{ \tau : \bbp(X \le \tau) \ge \beta \} $}
+\begin{itemize}
+\visible<1->{
+\item Also know as \textbf{Value-at-Risk} (confidence/risk level $\beta \in (0,1)$).
+\item Smallest $\tau$ such that with probability $\beta$, $\cJ(S(z))$ does not exceed the value $\tau$.  
+\item Measures risky (catastrophic) events.
+}
+\item Q: \alert{What could possibly go wrong?} 
+\visible<2->{
+\item A: $\mathrm{VaR}$ does not account for the size of the tail. 
+\item A:  $\mathrm{VaR}$ is not subadditive. 
+\item Obviously difficult to minimize in general.
+}
+\end{itemize}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}\frametitle{Mitigating Risk using Risk Measures}
+\vspace{-2ex}
+\begin{exampleblock}{Minimize the $\beta$-Average $\mathrm{VaR}$: $\risk[X] := \frac{1}{1-\beta}\int_{\beta}^{1} \mathrm{VaR}_{\alpha}[X] \mathrm{d}\alpha$}
+\begin{itemize}
+\visible<1->{
+\item Many names:  Excess Loss, Mean Shortfall, Average VaR, Tail VaR. 
+\item We use \textbf{Conditional Value-at-Risk} ($\mathrm{CVaR}$).
+\item Minimize the expectation of the tail above the $\beta$-quantile.
+\begin{center}
+}
+\includegraphics[width=0.25\textwidth]{figures/cvar}
+\end{center}
+\item CVaR is positively homogeneous, subadditive, monotone on $L^1$, and ``\textbf{translation equivariant}'': 
+$
+\mathrm{CVaR}[X + c] = \mathrm{CVaR}[X] + c
+$
+for any constant $c \in \mathbb R$.
+\item CVaR has a convenient form for optimization:
+\[
+\mathrm{CVaR}_{\beta}[X] = 
+\inf_{t \in \mathbb R} 
+\left\{ 
+t + \frac{1}{1-\beta} \mathbb E[(X - t)_+]\
+\right\}
+\]
+\end{itemize}
+\end{exampleblock}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \subsection{The Conditional Value-at-Risk}
+% \begin{frame}\frametitle{Basic Properties and Reformulations}
+% \visible<1->{
+% \begin{exampleblock}{}
+% \begin{itemize}
+% \item A risk measure  $\risk : L^1(\Omega,\cF,\bbp) \to \overline{\mathbb R}$ that is\\ \textbf{-convex,\\ -positively homogeneous,\\ -monotonic}\\  \textbf{-translation equivariant} (p. 46)\\ is said to be \textbf{coherent}.
+% \item $\CVaR_{\beta}$ is coherent.
+% \end{itemize}
+% \end{exampleblock}
+% }
+% \visible<2->{
+% \begin{exampleblock}{}
+% \begin{itemize}
+% \item Coherent risk measures are \alert{distributionally robust} wrt the nominal measure $\bbp$. 
+% \item What does that mean and why should I care?
+% \end{itemize}
+% \end{exampleblock}
+% }
+% \end{frame}
+
+
+% \begin{frame}\frametitle{Distributional Robustness and CVaR}
+% \begin{exampleblock}{}
+% \begin{itemize}
+% \item Return to risk neutral case $\risk = \mathbb E$. \alert{$\bbp$ is unknown}, but an iid sample is available.
+% \item  We could use the \textbf{empirical probability measure} $\mathbb P_N$ and consider
+% \[
+% \min_{z \in \Zad} \wp(z) + \frac{1}{N} \sum_{i=1}^{N} \cJ(S(z))(\omega^i).
+% \]
+% \item This is a risk-neutral formulation, but expect \alert{overfitting}.
+% \item We could \alert{incorporate risk aversion} by defining a set of measures 
+% $
+% \mathfrak{A} \subset \mathcal{P}(\Omega),
+% $
+% where $\mathcal{P}(\Omega)$ is the set of all Borel probability measures over $(\Omega,\cF)$, that contains $\mathbb P_{N}$.
+% \item A robust data-driven formulation would then be
+% \[
+% \min_{z \in \Zad} \wp(z) + \sup_{\mathbb Q \in \mathfrak{A}}\mathbb E_{\mathbb Q}\left[ \cJ(S(z))\right].
+% \]
+% \end{itemize}
+% \end{exampleblock}
+% \end{frame}
+
+% \begin{frame}\frametitle{Distributional Robustness and CVaR}
+% \begin{exampleblock}{}
+% \centering 
+%  What is the ``\alert{correct}'' set $\mathfrak{A}$?
+% \end{exampleblock}
+% \visible<2->{
+% \begin{exampleblock}{Examples}
+% \begin{itemize}
+% \item Let $\mathfrak{F}$ be a subset of integrands $f: \Omega \to \mathbb R$. 
+% \item For $\varepsilon > 0$
+% \[
+% \mathfrak{A} := \left\{ \mathbb Q \in \mathcal{P}(\Omega) : \sup_{f \in \mathfrak{F}} \left| \mathbb E_{\mathbb P_{N}}[f] - \mathbb E_{\mathbb Q}[f]\right| \le \varepsilon
+% \right\}
+% \]
+% \item Depending $\mathfrak{F}$ this is, e.g., a Wasserstein-1, Fortet-Mourier, or bounded Lipschitz metric.
+% \item Without further insight, it is hard to see how this connects back to the theory of risk measures.
+% \item The metrics do have the advantage that the support (atoms) can be moved.  
+% \item The more tractable metrics, e.g., Wasserstein, are defined with integrands that have very little to do with the original integrand $\cJ(S(z))$.
+% \end{itemize}
+% \end{exampleblock}
+% }
+% \end{frame}
+
+% \begin{frame}\frametitle{Distributional Robustness and CVaR}
+% \vspace{-1ex}
+% \begin{exampleblock}{}
+% \begin{itemize}
+% \item Using convex analysis, it can be shown in general that
+% $
+% \CVaR{\beta}[X] = \sup_{\vartheta \in \mathfrak{A}} \mathbb E_{\mathbb P}[\vartheta X],
+% $
+% where 
+% \[
+% \mathfrak{A} = \left\{\vartheta \in L^{\infty}(\Omega,\cF,\bbp) \; \left| \; \mathbb E_{\mathbb P}[\vartheta] = 1,\quad 0 \le \vartheta \le \frac{1}{1-\beta} \quad \mathbb P\textrm{-a.s.}\right.\right\}
+% \]
+% \item For $\bbp = \bbp_N$ we have
+% $
+% \mathfrak{A} = \left\{ \vartheta \in \mathbb R^{N} \; \left| \; \sum_{i=1}^{N} \frac{\vartheta_i}{N} = 1,\quad 0 \le \vartheta_i \le \frac{1}{1-\beta} \quad i=1,\dots,N \right.\right\}.
+% $
+% \item This implies 
+% \[
+% \CVaR{\beta}[X] = \sup_{\vartheta}\left\{ \frac{1}{N} \sum_{i=1}^{N} \vartheta_i X(\omega^i) :  \sum_{i=1}^{N} \frac{\vartheta_i}{N} = 1,\quad 0 \le \vartheta_i \le \frac{1}{1-\beta} \quad i=1,\dots,N\right\}
+% \]
+% \item CVaR can therefore be used in a data-driven distributionally robust setting.
+% \item The original weights on $\mathbb P_N$ are readjusted to  $\vartheta_i/N$. 
+% \item Our risk preference, expressed by $\CVaR{\beta}$, determines a meaningful set of probability measures.
+% \end{itemize}
+% \end{exampleblock}
+% \end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}\frametitle{}
+\begin{center}\Large
+Section 1\\
+Part III:\\
 Examples: Making the discussion concrete.
 \end{center}
 \end{frame}
@@ -646,13 +956,12 @@ traction forces $\alert{g}$
 % \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Theory}
+\section{Basic Theory}
 
 \begin{frame}\frametitle{}
 \begin{center}\Large
-Section 1\\
-Part III:\\
-Theory: How to handle PDE-constraints
+Section 2\\
+Basic Theory: How to handle PDE-constraints
 \end{center}
 \end{frame}
 
@@ -706,7 +1015,7 @@ There exists a \textbf{unique solution} $u \in H^1(D)$ that solves the weak form
 \]
 The mapping $(g,f) \mapsto u$ is \textbf{bounded and linear} $\Longrightarrow$ $S(z)$ continuous, differentiable.
 \end{exampleblock}}
-\only<3>{
+\only<3->{
 \begin{exampleblock}{Nonlinear Boundary Value Problem (Allen-Cahn)}
 There exist \textbf{solution\alert{s}} $u \in H^1(D)$ of 
 \[
@@ -718,31 +1027,37 @@ There exist \textbf{solution\alert{s}} $u \in H^1(D)$ of
 $\Longrightarrow$ $S(z)$ is \alert{set-valued}.
 \end{exampleblock}
 }
+\only<4>{
+\begin{exampleblock}{}
+\centering Without single-valued $S(z)$, theory and algorithmic approaches are more difficult.\\ Leads to 
+\textbf{full space approach}.
+\end{exampleblock}
+}
 \end{frame}
 
-\begin{frame}\frametitle{What do I know about the PDE?}
-\begin{exampleblock}{}
-\begin{itemize}
-\item Without single-valued $S(z)$, theory and algorithmic approaches are more difficult. 
-\item \visible<2->{
-\textbf{Full space approach:} Need derivatives $e_u(u^{\star},z^{\star}), e_y(u^{\star},z^{\star})$ at a solution  $(u^{\star},z^{\star})$ and 
-$
-e'(u^{\star},z^{\star}) \text{ is surjective }.
-$
-}
-\end{itemize}
-\end{exampleblock}
-\visible<3->{
-\begin{exampleblock}{}
-In either case, the workflow becomes 
-\begin{itemize}
-\item Does there exist a well-defined control-to-state mapping $S(z)$?
-\item What regularity does $u$ have? (e.g. $u$ is in $H^1(D)$? $H^2(D)$?)
-\item Is $S$ differentiable? What PDE does $w = S'(u) h$ solve?
-\end{itemize}
-\end{exampleblock}
-}
-\end{frame}
+% \begin{frame}\frametitle{What do I know about the PDE?}
+% \begin{exampleblock}{}
+% \begin{itemize}
+% \item Without single-valued $S(z)$, theory and algorithmic approaches are more difficult. 
+% \item \visible<2->{
+% \textbf{Full space approach:} Need derivatives $e_u(u^{\star},z^{\star}), e_y(u^{\star},z^{\star})$ at a solution  $(u^{\star},z^{\star})$ and 
+% $
+% e'(u^{\star},z^{\star}) \text{ is surjective }.
+% $
+% }
+% \end{itemize}
+% \end{exampleblock}
+% \visible<3->{
+% \begin{exampleblock}{}
+% In either case, the workflow becomes 
+% \begin{itemize}
+% \item Does there exist a well-defined control-to-state mapping $S(z)$?
+% \item What regularity does $u$ have? (e.g. $u$ is in $H^1(D)$? $H^2(D)$?)
+% \item Is $S$ differentiable? What PDE does $w = S'(u) h$ solve?
+% \end{itemize}
+% \end{exampleblock}
+% }
+% \end{frame}
 
 \begin{frame}\frametitle{Random PDE Constraints}
 \begin{exampleblock}{}
@@ -971,8 +1286,6 @@ where $B : \Omega \to \mathcal{L}(Z, \cU^*)$ is, e.g., bounded and measurable in
 \end{frame}
 
 
-
-
 \begin{frame}\frametitle{Existence of Solutions}
 \begin{exampleblock}{}
 \begin{itemize}
@@ -1055,272 +1368,272 @@ where $B : \Omega \to \mathcal{L}(Z, \cU^*)$ is, e.g., bounded and measurable in
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}\frametitle{}
-\begin{center}\Large
-Section 1\\
-Part IV:\\
-Risk-Averse Decision Making 
-\end{center}
-\end{frame}
+% \begin{frame}\frametitle{}
+% \begin{center}\Large
+% Section 1\\
+% Part IV:\\
+% Risk-Averse Decision Making 
+% \end{center}
+% \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Risk Models}
-\begin{frame}\frametitle{Robust Optimization}
-\visible<1->{
-\begin{exampleblock}{Motivation}
-\begin{itemize}
-\item An \textbf{uncertainty region} $\Omega$ is known, but \alert{no data} for statistical estimation is available.
-\item An \textbf{uncertainty region} $\Omega$ is known and data is available, but there is \alert{no room for error}.
-\item An \textbf{uncertainty region} $\Omega$ is known and data is available, but the \alert{$\mathrm{dim}\, \Omega$ is intractable}.
-\item The functional $\risk$ should then take the form  
-\[
-\risk[X] := \sup_{\omega \in \Omega} X(\omega).
-\]
-\end{itemize}
-\end{exampleblock}
-}
-\visible<2->{
-\begin{exampleblock}{}
-\begin{itemize}
-\item The robust PDE-constrained optimization problem takes the general form:
-\begin{equation}\label{eq:robust}
-\min_{z \in \Zad}\left\{ \wp(z) + \sup_{\omega \in \Omega} \mathcal{J}(S(z))(\omega) \right\}
-\end{equation}
-\item \alert{Hard to solve}: A nonsmooth, possibly nonconvex, $\infty$-dimensional problem. 
-% %\item The formulation might be overly restrictive/too pessimistic.
-% \item Existing approaches transform \eqref{eq:robust} into a mathematical program with equilibrium constraints (MPEC). MPECs with PDE operators are very hard to solve numerically.
-\end{itemize}
-\end{exampleblock}
-}
-\end{frame}
-
-\begin{frame}\frametitle{Stochastic Order Constraints}
-\vspace{-2ex}
-\begin{exampleblock}{Motivation}
-\begin{itemize}
-\visible<1->{
-\item A \textbf{complete probability space} $(\Omega,\cF, \bbp)$ is available.
-\item A \textbf{benchmark} decision, design, stationary control $z_d \in Z$ or objective value $c$ is given.
-}
-\visible<2->{
-\item The risk-averse PDE-constrained optimization problem might take the general form:
-\begin{equation}\label{eq:prob}
-\min_{z \in \Zad} \left\{ \wp(z) + \mathbb E \left[\mathcal{J}(S(z)) \right] : \mathbb P\left\{\cJ(S(z)) < \cJ(S(z_{d}))\right\} \ge p \right\} \quad p \in (0,1).\vspace{-4ex}
-\end{equation}
-}
-\end{itemize}
-\visible<3->{
-\begin{center}
-    \textit{Find $z^{\star} \in \Zad$ that \alert{performs well on average} such that the random variable $\omega \mapsto \mathcal{J}(S(z^{\star}))(\omega) - \cJ(S(z_{d}))(\omega)$ is \alert{negative with probability $p$.}
-    }    
-\end{center}
-}
-\end{exampleblock}
-\visible<4->{
-\begin{exampleblock}{}
-Many variants available: 
-\begin{itemize}
-\item Replace $\cJ(S(z_{d}))$ with a constant $c$ or choose more than one/all $p \in (0,1)$.
-\item Compare \alert{tails}  of $\cJ(S(z))$ to $\cJ(S(z_{d}))$ over a range of values.
-\item The constraint function $\varphi(z) := \mathbb P\left\{\cJ(S(z)) \le c \right\}$ is highly nontrivial.
-\end{itemize}
-\end{exampleblock}
-}
-\end{frame}
-
-
-\begin{frame}\frametitle{Minimizing the Expectation}
-\visible<1->{
-\begin{exampleblock}{Optimization with Risk Measures}
-\begin{itemize}
-\item The risk-averse PDE-constrained optimization problem takes the general form:
-\begin{equation}\label{eq:prob}
-\min_{z \in \Zad} \left\{ \wp(z) + \risk \left[\mathcal{J}(S(z)) \right] \right\}
-\end{equation}
-\item $\risk$ should ``shape'' the distribution of the objective function at an optimal solution $z^{\star}$. 
-\end{itemize}
-\end{exampleblock}
-}
-\visible<2->{
-\begin{exampleblock}{Traditional Approach: $\risk = \mathbb E$ (``risk neutral case'')}
-\begin{itemize}
-\visible<2->{
-\item Optimize to achieve best performance \textbf{on average}.
-\item Q: \alert{What could possibly go wrong?} 
-}
-\visible<3->{\item A: Does not account for potentially catastrophic tail events.}
-\visible<4->{\item Often consider: $\nu \bbe + (1-\nu) \risk$ with $\risk$ being something other than $\mathbb E$, $\nu \in (0,1)$, instead.}
-\end{itemize}
-\end{exampleblock}
-}
-\end{frame}
-
-\begin{frame}\frametitle{Mitigating Risk using Risk Measures}
-
-
-\begin{exampleblock}{Traditional Mean-Var Approach: $\risk = \nu \mathbb E+(1-\nu) \mathbb V$}
-\begin{itemize}
-\visible<1->{
-\item Maximize \textbf{average performance} vs.\ \textbf{minimize variance} $\mathbb V[X] = \mathbb E[(X-\mathbb E[X])^2]$ 
-\item Q: \alert{What could possibly go wrong?} 
-}
-\visible<2->{
-\item A:  $\mathbb V$ may penalize favorable outlier situations: We are happy if $\cJ(S(z))(\omega) \ll \cJ(S(y))(\omega)$.
-\item $\mathbb V$ is not monotone w.r.t.\ the partial order on ${L}^{1}(\Omega,\cF, \bbp)$: The pointwise bound
-\[
-\cJ(S(z))(\omega) \le \cJ(S(y))(\omega),\; \Pae \omega \in \Omega
-\]
-does not guarantee $\mathbb V(\cJ(S(z))) \le \mathbb V(\cJ(S(y)))$. 
-\item This is not seen to be favorable for optimization.
-}
-\end{itemize}
-\end{exampleblock}
-\end{frame}
-
-\begin{frame}\frametitle{Mitigating Risk using Risk Measures}
-\begin{exampleblock}{Minimize the $\beta$-Quantile: $\risk[X] = \inf\{ \tau : \bbp(X \le \tau) \ge \beta \} $}
-\begin{itemize}
-\visible<1->{
-\item Also know as \textbf{Value-at-Risk} (confidence/risk level $\beta \in (0,1)$).
-\item Smallest $\tau$ such that with probability $\beta$, $\cJ(S(z))$ does not exceed the value $\tau$.  
-\item Measures risky (catastrophic) events.
-}
-\item Q: \alert{What could possibly go wrong?} 
-\visible<2->{
-\item A: $\mathrm{VaR}$ does not account for the size of the tail. 
-\item A:  $\mathrm{VaR}$ is not subadditive. 
-\item Obviously difficult to minimize in general.
-}
-\end{itemize}
-\end{exampleblock}
-\end{frame}
-
-\begin{frame}\frametitle{Mitigating Risk using Risk Measures}
-\vspace{-2ex}
-\begin{exampleblock}{Minimize the $\beta$-Average $\mathrm{VaR}$: $\risk[X] := \frac{1}{1-\beta}\int_{\beta}^{1} \mathrm{VaR}_{\alpha}[X] \mathrm{d}\alpha$}
-\begin{itemize}
-\visible<1->{
-\item Many names:  Excess Loss, Mean Shortfall, Average VaR, Tail VaR. 
-\item We use \textbf{Conditional Value-at-Risk} ($\mathrm{CVaR}$).
-\item Minimize the expectation of the tail above the $\beta$-quantile.
-\begin{center}
-}
-\includegraphics[width=0.25\textwidth]{figures/cvar}
-\end{center}
-\item CVaR is positively homogeneous, subadditive, monotone on $L^1$, and ``\textbf{translation equivariant}'': 
-$
-\mathrm{CVaR}[X + c] = \mathrm{CVaR}[X] + c
-$
-for any constant $c \in \mathbb R$.
-\item CVaR has a convenient form for optimization:
-\[
-\mathrm{CVaR}_{\beta}[X] = 
-\inf_{t \in \mathbb R} 
-\left\{ 
-t + \frac{1}{1-\beta} \mathbb E[(X - t)_+]\
-\right\}
-\]
-\end{itemize}
-\end{exampleblock}
-\end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \subsection{The Conditional Value-at-Risk}
-% \begin{frame}\frametitle{Basic Properties and Reformulations}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \subsection{Risk Models}
+% \begin{frame}\frametitle{Robust Optimization}
 % \visible<1->{
-% \begin{exampleblock}{}
+% \begin{exampleblock}{Motivation}
 % \begin{itemize}
-% \item A risk measure  $\risk : L^1(\Omega,\cF,\bbp) \to \overline{\mathbb R}$ that is\\ \textbf{-convex,\\ -positively homogeneous,\\ -monotonic}\\  \textbf{-translation equivariant} (p. 46)\\ is said to be \textbf{coherent}.
-% \item $\CVaR_{\beta}$ is coherent.
+% \item An \textbf{uncertainty region} $\Omega$ is known, but \alert{no data} for statistical estimation is available.
+% \item An \textbf{uncertainty region} $\Omega$ is known and data is available, but there is \alert{no room for error}.
+% \item An \textbf{uncertainty region} $\Omega$ is known and data is available, but the \alert{$\mathrm{dim}\, \Omega$ is intractable}.
+% \item The functional $\risk$ should then take the form  
+% \[
+% \risk[X] := \sup_{\omega \in \Omega} X(\omega).
+% \]
 % \end{itemize}
 % \end{exampleblock}
 % }
 % \visible<2->{
 % \begin{exampleblock}{}
 % \begin{itemize}
-% \item Coherent risk measures are \alert{distributionally robust} wrt the nominal measure $\bbp$. 
-% \item What does that mean and why should I care?
+% \item The robust PDE-constrained optimization problem takes the general form:
+% \begin{equation}\label{eq:robust}
+% \min_{z \in \Zad}\left\{ \wp(z) + \sup_{\omega \in \Omega} \mathcal{J}(S(z))(\omega) \right\}
+% \end{equation}
+% \item \alert{Hard to solve}: A nonsmooth, possibly nonconvex, $\infty$-dimensional problem. 
+% % %\item The formulation might be overly restrictive/too pessimistic.
+% % \item Existing approaches transform \eqref{eq:robust} into a mathematical program with equilibrium constraints (MPEC). MPECs with PDE operators are very hard to solve numerically.
+% \end{itemize}
+% \end{exampleblock}
+% }
+% \end{frame}
+
+% \begin{frame}\frametitle{Stochastic Order Constraints}
+% \vspace{-2ex}
+% \begin{exampleblock}{Motivation}
+% \begin{itemize}
+% \visible<1->{
+% \item A \textbf{complete probability space} $(\Omega,\cF, \bbp)$ is available.
+% \item A \textbf{benchmark} decision, design, stationary control $z_d \in Z$ or objective value $c$ is given.
+% }
+% \visible<2->{
+% \item The risk-averse PDE-constrained optimization problem might take the general form:
+% \begin{equation}\label{eq:prob}
+% \min_{z \in \Zad} \left\{ \wp(z) + \mathbb E \left[\mathcal{J}(S(z)) \right] : \mathbb P\left\{\cJ(S(z)) < \cJ(S(z_{d}))\right\} \ge p \right\} \quad p \in (0,1).\vspace{-4ex}
+% \end{equation}
+% }
+% \end{itemize}
+% \visible<3->{
+% \begin{center}
+%     \textit{Find $z^{\star} \in \Zad$ that \alert{performs well on average} such that the random variable $\omega \mapsto \mathcal{J}(S(z^{\star}))(\omega) - \cJ(S(z_{d}))(\omega)$ is \alert{negative with probability $p$.}
+%     }    
+% \end{center}
+% }
+% \end{exampleblock}
+% \visible<4->{
+% \begin{exampleblock}{}
+% Many variants available: 
+% \begin{itemize}
+% \item Replace $\cJ(S(z_{d}))$ with a constant $c$ or choose more than one/all $p \in (0,1)$.
+% \item Compare \alert{tails}  of $\cJ(S(z))$ to $\cJ(S(z_{d}))$ over a range of values.
+% \item The constraint function $\varphi(z) := \mathbb P\left\{\cJ(S(z)) \le c \right\}$ is highly nontrivial.
 % \end{itemize}
 % \end{exampleblock}
 % }
 % \end{frame}
 
 
-% \begin{frame}\frametitle{Distributional Robustness and CVaR}
-% \begin{exampleblock}{}
+% \begin{frame}\frametitle{Minimizing the Expectation}
+% \visible<1->{
+% \begin{exampleblock}{Optimization with Risk Measures}
 % \begin{itemize}
-% \item Return to risk neutral case $\risk = \mathbb E$. \alert{$\bbp$ is unknown}, but an iid sample is available.
-% \item  We could use the \textbf{empirical probability measure} $\mathbb P_N$ and consider
+% \item The risk-averse PDE-constrained optimization problem takes the general form:
+% \begin{equation}\label{eq:prob}
+% \min_{z \in \Zad} \left\{ \wp(z) + \risk \left[\mathcal{J}(S(z)) \right] \right\}
+% \end{equation}
+% \item $\risk$ should ``shape'' the distribution of the objective function at an optimal solution $z^{\star}$. 
+% \end{itemize}
+% \end{exampleblock}
+% }
+% \visible<2->{
+% \begin{exampleblock}{Traditional Approach: $\risk = \mathbb E$ (``risk neutral case'')}
+% \begin{itemize}
+% \visible<2->{
+% \item Optimize to achieve best performance \textbf{on average}.
+% \item Q: \alert{What could possibly go wrong?} 
+% }
+% \visible<3->{\item A: Does not account for potentially catastrophic tail events.}
+% \visible<4->{\item Often consider: $\nu \bbe + (1-\nu) \risk$ with $\risk$ being something other than $\mathbb E$, $\nu \in (0,1)$, instead.}
+% \end{itemize}
+% \end{exampleblock}
+% }
+% \end{frame}
+
+% \begin{frame}\frametitle{Mitigating Risk using Risk Measures}
+
+
+% \begin{exampleblock}{Traditional Mean-Var Approach: $\risk = \nu \mathbb E+(1-\nu) \mathbb V$}
+% \begin{itemize}
+% \visible<1->{
+% \item Maximize \textbf{average performance} vs.\ \textbf{minimize variance} $\mathbb V[X] = \mathbb E[(X-\mathbb E[X])^2]$ 
+% \item Q: \alert{What could possibly go wrong?} 
+% }
+% \visible<2->{
+% \item A:  $\mathbb V$ may penalize favorable outlier situations: We are happy if $\cJ(S(z))(\omega) \ll \cJ(S(y))(\omega)$.
+% \item $\mathbb V$ is not monotone w.r.t.\ the partial order on ${L}^{1}(\Omega,\cF, \bbp)$: The pointwise bound
 % \[
-% \min_{z \in \Zad} \wp(z) + \frac{1}{N} \sum_{i=1}^{N} \cJ(S(z))(\omega^i).
+% \cJ(S(z))(\omega) \le \cJ(S(y))(\omega),\; \Pae \omega \in \Omega
 % \]
-% \item This is a risk-neutral formulation, but expect \alert{overfitting}.
-% \item We could \alert{incorporate risk aversion} by defining a set of measures 
-% $
-% \mathfrak{A} \subset \mathcal{P}(\Omega),
-% $
-% where $\mathcal{P}(\Omega)$ is the set of all Borel probability measures over $(\Omega,\cF)$, that contains $\mathbb P_{N}$.
-% \item A robust data-driven formulation would then be
-% \[
-% \min_{z \in \Zad} \wp(z) + \sup_{\mathbb Q \in \mathfrak{A}}\mathbb E_{\mathbb Q}\left[ \cJ(S(z))\right].
-% \]
+% does not guarantee $\mathbb V(\cJ(S(z))) \le \mathbb V(\cJ(S(y)))$. 
+% \item This is not seen to be favorable for optimization.
+% }
 % \end{itemize}
 % \end{exampleblock}
 % \end{frame}
 
-% \begin{frame}\frametitle{Distributional Robustness and CVaR}
-% \begin{exampleblock}{}
-% \centering 
-%  What is the ``\alert{correct}'' set $\mathfrak{A}$?
-% \end{exampleblock}
-% \visible<2->{
-% \begin{exampleblock}{Examples}
+% \begin{frame}\frametitle{Mitigating Risk using Risk Measures}
+% \begin{exampleblock}{Minimize the $\beta$-Quantile: $\risk[X] = \inf\{ \tau : \bbp(X \le \tau) \ge \beta \} $}
 % \begin{itemize}
-% \item Let $\mathfrak{F}$ be a subset of integrands $f: \Omega \to \mathbb R$. 
-% \item For $\varepsilon > 0$
+% \visible<1->{
+% \item Also know as \textbf{Value-at-Risk} (confidence/risk level $\beta \in (0,1)$).
+% \item Smallest $\tau$ such that with probability $\beta$, $\cJ(S(z))$ does not exceed the value $\tau$.  
+% \item Measures risky (catastrophic) events.
+% }
+% \item Q: \alert{What could possibly go wrong?} 
+% \visible<2->{
+% \item A: $\mathrm{VaR}$ does not account for the size of the tail. 
+% \item A:  $\mathrm{VaR}$ is not subadditive. 
+% \item Obviously difficult to minimize in general.
+% }
+% \end{itemize}
+% \end{exampleblock}
+% \end{frame}
+
+% \begin{frame}\frametitle{Mitigating Risk using Risk Measures}
+% \vspace{-2ex}
+% \begin{exampleblock}{Minimize the $\beta$-Average $\mathrm{VaR}$: $\risk[X] := \frac{1}{1-\beta}\int_{\beta}^{1} \mathrm{VaR}_{\alpha}[X] \mathrm{d}\alpha$}
+% \begin{itemize}
+% \visible<1->{
+% \item Many names:  Excess Loss, Mean Shortfall, Average VaR, Tail VaR. 
+% \item We use \textbf{Conditional Value-at-Risk} ($\mathrm{CVaR}$).
+% \item Minimize the expectation of the tail above the $\beta$-quantile.
+% \begin{center}
+% }
+% \includegraphics[width=0.25\textwidth]{figures/cvar}
+% \end{center}
+% \item CVaR is positively homogeneous, subadditive, monotone on $L^1$, and ``\textbf{translation equivariant}'': 
+% $
+% \mathrm{CVaR}[X + c] = \mathrm{CVaR}[X] + c
+% $
+% for any constant $c \in \mathbb R$.
+% \item CVaR has a convenient form for optimization:
 % \[
-% \mathfrak{A} := \left\{ \mathbb Q \in \mathcal{P}(\Omega) : \sup_{f \in \mathfrak{F}} \left| \mathbb E_{\mathbb P_{N}}[f] - \mathbb E_{\mathbb Q}[f]\right| \le \varepsilon
+% \mathrm{CVaR}_{\beta}[X] = 
+% \inf_{t \in \mathbb R} 
+% \left\{ 
+% t + \frac{1}{1-\beta} \mathbb E[(X - t)_+]\
 % \right\}
 % \]
-% \item Depending $\mathfrak{F}$ this is, e.g., a Wasserstein-1, Fortet-Mourier, or bounded Lipschitz metric.
-% \item Without further insight, it is hard to see how this connects back to the theory of risk measures.
-% \item The metrics do have the advantage that the support (atoms) can be moved.  
-% \item The more tractable metrics, e.g., Wasserstein, are defined with integrands that have very little to do with the original integrand $\cJ(S(z))$.
 % \end{itemize}
 % \end{exampleblock}
-% }
 % \end{frame}
 
-% \begin{frame}\frametitle{Distributional Robustness and CVaR}
-% \vspace{-1ex}
-% \begin{exampleblock}{}
-% \begin{itemize}
-% \item Using convex analysis, it can be shown in general that
-% $
-% \CVaR{\beta}[X] = \sup_{\vartheta \in \mathfrak{A}} \mathbb E_{\mathbb P}[\vartheta X],
-% $
-% where 
-% \[
-% \mathfrak{A} = \left\{\vartheta \in L^{\infty}(\Omega,\cF,\bbp) \; \left| \; \mathbb E_{\mathbb P}[\vartheta] = 1,\quad 0 \le \vartheta \le \frac{1}{1-\beta} \quad \mathbb P\textrm{-a.s.}\right.\right\}
-% \]
-% \item For $\bbp = \bbp_N$ we have
-% $
-% \mathfrak{A} = \left\{ \vartheta \in \mathbb R^{N} \; \left| \; \sum_{i=1}^{N} \frac{\vartheta_i}{N} = 1,\quad 0 \le \vartheta_i \le \frac{1}{1-\beta} \quad i=1,\dots,N \right.\right\}.
-% $
-% \item This implies 
-% \[
-% \CVaR{\beta}[X] = \sup_{\vartheta}\left\{ \frac{1}{N} \sum_{i=1}^{N} \vartheta_i X(\omega^i) :  \sum_{i=1}^{N} \frac{\vartheta_i}{N} = 1,\quad 0 \le \vartheta_i \le \frac{1}{1-\beta} \quad i=1,\dots,N\right\}
-% \]
-% \item CVaR can therefore be used in a data-driven distributionally robust setting.
-% \item The original weights on $\mathbb P_N$ are readjusted to  $\vartheta_i/N$. 
-% \item Our risk preference, expressed by $\CVaR{\beta}$, determines a meaningful set of probability measures.
-% \end{itemize}
-% \end{exampleblock}
-% \end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% % \subsection{The Conditional Value-at-Risk}
+% % \begin{frame}\frametitle{Basic Properties and Reformulations}
+% % \visible<1->{
+% % \begin{exampleblock}{}
+% % \begin{itemize}
+% % \item A risk measure  $\risk : L^1(\Omega,\cF,\bbp) \to \overline{\mathbb R}$ that is\\ \textbf{-convex,\\ -positively homogeneous,\\ -monotonic}\\  \textbf{-translation equivariant} (p. 46)\\ is said to be \textbf{coherent}.
+% % \item $\CVaR_{\beta}$ is coherent.
+% % \end{itemize}
+% % \end{exampleblock}
+% % }
+% % \visible<2->{
+% % \begin{exampleblock}{}
+% % \begin{itemize}
+% % \item Coherent risk measures are \alert{distributionally robust} wrt the nominal measure $\bbp$. 
+% % \item What does that mean and why should I care?
+% % \end{itemize}
+% % \end{exampleblock}
+% % }
+% % \end{frame}
+
+
+% % \begin{frame}\frametitle{Distributional Robustness and CVaR}
+% % \begin{exampleblock}{}
+% % \begin{itemize}
+% % \item Return to risk neutral case $\risk = \mathbb E$. \alert{$\bbp$ is unknown}, but an iid sample is available.
+% % \item  We could use the \textbf{empirical probability measure} $\mathbb P_N$ and consider
+% % \[
+% % \min_{z \in \Zad} \wp(z) + \frac{1}{N} \sum_{i=1}^{N} \cJ(S(z))(\omega^i).
+% % \]
+% % \item This is a risk-neutral formulation, but expect \alert{overfitting}.
+% % \item We could \alert{incorporate risk aversion} by defining a set of measures 
+% % $
+% % \mathfrak{A} \subset \mathcal{P}(\Omega),
+% % $
+% % where $\mathcal{P}(\Omega)$ is the set of all Borel probability measures over $(\Omega,\cF)$, that contains $\mathbb P_{N}$.
+% % \item A robust data-driven formulation would then be
+% % \[
+% % \min_{z \in \Zad} \wp(z) + \sup_{\mathbb Q \in \mathfrak{A}}\mathbb E_{\mathbb Q}\left[ \cJ(S(z))\right].
+% % \]
+% % \end{itemize}
+% % \end{exampleblock}
+% % \end{frame}
+
+% % \begin{frame}\frametitle{Distributional Robustness and CVaR}
+% % \begin{exampleblock}{}
+% % \centering 
+% %  What is the ``\alert{correct}'' set $\mathfrak{A}$?
+% % \end{exampleblock}
+% % \visible<2->{
+% % \begin{exampleblock}{Examples}
+% % \begin{itemize}
+% % \item Let $\mathfrak{F}$ be a subset of integrands $f: \Omega \to \mathbb R$. 
+% % \item For $\varepsilon > 0$
+% % \[
+% % \mathfrak{A} := \left\{ \mathbb Q \in \mathcal{P}(\Omega) : \sup_{f \in \mathfrak{F}} \left| \mathbb E_{\mathbb P_{N}}[f] - \mathbb E_{\mathbb Q}[f]\right| \le \varepsilon
+% % \right\}
+% % \]
+% % \item Depending $\mathfrak{F}$ this is, e.g., a Wasserstein-1, Fortet-Mourier, or bounded Lipschitz metric.
+% % \item Without further insight, it is hard to see how this connects back to the theory of risk measures.
+% % \item The metrics do have the advantage that the support (atoms) can be moved.  
+% % \item The more tractable metrics, e.g., Wasserstein, are defined with integrands that have very little to do with the original integrand $\cJ(S(z))$.
+% % \end{itemize}
+% % \end{exampleblock}
+% % }
+% % \end{frame}
+
+% % \begin{frame}\frametitle{Distributional Robustness and CVaR}
+% % \vspace{-1ex}
+% % \begin{exampleblock}{}
+% % \begin{itemize}
+% % \item Using convex analysis, it can be shown in general that
+% % $
+% % \CVaR{\beta}[X] = \sup_{\vartheta \in \mathfrak{A}} \mathbb E_{\mathbb P}[\vartheta X],
+% % $
+% % where 
+% % \[
+% % \mathfrak{A} = \left\{\vartheta \in L^{\infty}(\Omega,\cF,\bbp) \; \left| \; \mathbb E_{\mathbb P}[\vartheta] = 1,\quad 0 \le \vartheta \le \frac{1}{1-\beta} \quad \mathbb P\textrm{-a.s.}\right.\right\}
+% % \]
+% % \item For $\bbp = \bbp_N$ we have
+% % $
+% % \mathfrak{A} = \left\{ \vartheta \in \mathbb R^{N} \; \left| \; \sum_{i=1}^{N} \frac{\vartheta_i}{N} = 1,\quad 0 \le \vartheta_i \le \frac{1}{1-\beta} \quad i=1,\dots,N \right.\right\}.
+% % $
+% % \item This implies 
+% % \[
+% % \CVaR{\beta}[X] = \sup_{\vartheta}\left\{ \frac{1}{N} \sum_{i=1}^{N} \vartheta_i X(\omega^i) :  \sum_{i=1}^{N} \frac{\vartheta_i}{N} = 1,\quad 0 \le \vartheta_i \le \frac{1}{1-\beta} \quad i=1,\dots,N\right\}
+% % \]
+% % \item CVaR can therefore be used in a data-driven distributionally robust setting.
+% % \item The original weights on $\mathbb P_N$ are readjusted to  $\vartheta_i/N$. 
+% % \item Our risk preference, expressed by $\CVaR{\beta}$, determines a meaningful set of probability measures.
+% % \end{itemize}
+% % \end{exampleblock}
+% % \end{frame}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % \begin{frame}\frametitle{}
@@ -1335,14 +1648,20 @@ t + \frac{1}{1-\beta} \mathbb E[(X - t)_+]\
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Algorithms and Numerical Solution}
+\section{Algorithms and Numerical Solution}
 
 \begin{frame}\frametitle{}
 \begin{center}\Large
-Section 1\\
-Part V:\\
+Section 3\\
 Algorithms: Computing derivatives and treating uncertainty
+\end{center}\bigskip
+
+\visible<2->{
+\begin{center}\Large
+Take away \#4:\\
+\textit{Don't forget to use \alert{Riesz mappings} for your discrete gradients? }
 \end{center}
+}
 \end{frame}
 
 % \begin{frame}\frametitle{How can I solve the optimization problem numerically?}
@@ -1375,7 +1694,7 @@ Algorithms: Computing derivatives and treating uncertainty
 \min_{x \in X_{\rm ad}} f(x) + \Phi(F(x)) \text{ over } x \in X.
 \]\vspace{-2ex}
 \item $X, Y$ are real \textbf{Hilbert spaces}. 
-\item $f:X \to \mathbb R$ is typically continuous, convex, \textbf{differentiable}.
+\item $f:X \to \mathbb R$ is typically continuous, \textbf{differentiable}.
 \item $\Phi: Y \to \mathbb R$ is \textbf{nonsmooth}, convex, positive homogeneous, monotone.
 \item $F: X \to Y$ is continuous, typically differentiable, \textbf{expensive to evaluate}.
 \end{itemize}
@@ -1385,18 +1704,19 @@ Algorithms: Computing derivatives and treating uncertainty
 \begin{exampleblock}{}
 \begin{itemize}
 \item \visible<2->{
-\textbf{``PDE''-part}: $X$ replaces $\{X_h\}$, $X_h$  finite dim.\ with elements $u_{h}(x) = \sum_{i=1}^{N} u^h_i \varphi^h_i(x)$.
+\textbf{``PDE''-part}: $X$ replaced by $\{X_h\}_{h > 0}$
+%, $X_h$  finite dim.\ with elements $u_{h}(x) = \sum_{i=1}^{N} u^h_i \varphi^h_i(x)$.
 }
 \item \visible<3->{
 \textbf{``PDE''-part}: $F(x)$ requires the solution of a PDE with input $x$.
 }
 \item \visible<4->{
-\textbf{``Random"-part}: cannot evaluate $F(x)$ or even $F(x_h)$ $x_h \in X_h$.
+\textbf{``Random"-part}: cannot evaluate $F(x)$ $x \in X$ or even $F_h(x_h)$ $x_h \in X_h$.
 }
 \item \visible<5->{Derivatives are \textbf{dual} objects, gradients are \textbf{primal}.
 }
-\item \visible<6->{To compute $x_{k} - \gamma_k\nabla f(x_k)$ in an algorithm, we first need
- $\nabla f(x) = \mathfrak{R}_{\rm Riesz} f'(x)$.}
+% \item \visible<6->{To compute $x_{k} - \gamma_k\nabla f(x_k)$ in an algorithm, we first need
+%  $\nabla f(x) = \mathfrak{R}_{\rm Riesz} f'(x)$.}
 %\item $R^{-1}_{\rm Riesz}$ is usually not the identity {\rm Id}; may require a PDE solve.
 \end{itemize}
 \end{exampleblock}
@@ -1461,7 +1781,7 @@ $ we have
 \[
 u_{\varphi} = (-\Delta)^{-1} \varphi,
 \]
-i.e., $\mathfrak{R}_{\rm Riesz}$ requires the solution of Poisson problem in $H^1_0(D)$.
+\item $\mathfrak{R}_{\rm Riesz}$ requires the solution of Poisson problem in $H^1_0(D)$.
 }
 \end{itemize}
 \end{example}
@@ -1492,6 +1812,12 @@ $M_h$ is the mass matrix associated with the discrete $L^2$-inner product.
 \end{example}
 \end{frame}
 
+\begin{frame}\frametitle{}
+\begin{center}\Large
+Take away \#5:\\
+\textit{Numerical PDE-constrained optimization is possible thanks to the \alert{adjoint method}.}
+\end{center}
+\end{frame}
 
 \begin{frame}\frametitle{Two essential computations}
 \begin{exampleblock}{}
@@ -1609,6 +1935,13 @@ z^{i+1} = \mathrm{Proj}_{Z_{\rm ad}}(z^i - \gamma^i G_i).
 \end{exampleblock}
 \end{frame}
 
+\begin{frame}\frametitle{}
+\begin{center}\Large
+Take away \#6:\\
+\textit{Numerical OUU algorithms require sampling. What works best?}
+\end{center}
+\end{frame}
+
 \begin{frame}\frametitle{Uncertainty in Computation}
 \begin{exampleblock}{}
 \begin{itemize}
@@ -1632,6 +1965,12 @@ z^{i+1} = \mathrm{Proj}_{Z_{\rm ad}}(z^i - \gamma^i G_i).
 }
 \end{frame}
 
+\begin{frame}\frametitle{}
+\begin{center}\Large
+Take away \#7:\\
+\textit{It is difficult to know when to stop an algorithm in OUU.}
+\end{center}
+\end{frame}
 
 \begin{frame}\frametitle{Stopping Criteria}
 \begin{exampleblock}{}
@@ -2181,7 +2520,7 @@ where $\tau_{\rm rel} > 0$ and $\tau_{\rm abs} > 0$ are absolute and relative to
 \subsection{Stochastic Approximation: Pros, Cons, and Behavior in Practice}
 \begin{frame}\frametitle{}
 \begin{center}\Large
-Section 3\\
+Section 4\\
 Algorithms for OUU:\\
 Part I: Stochastic Approximation
 \end{center}
@@ -2190,7 +2529,7 @@ Part I: Stochastic Approximation
 \begin{frame}\frametitle{Basic SA-Type Algorithm}
 \begin{exampleblock}{Preliminary Remarks}
 \begin{itemize}
-\item \textbf{SGD}: \textbf{S}tochastic \textbf{G}radient \textbf{D}escent, also \textbf{SA}: \textbf{S}tochastic \textbf{A}pproximation.
+\item \textbf{SA}: \textbf{S}tochastic \textbf{A}pproximation.
 \visible<2->{
 \item The problems of interest typically \alert{do not} arise in a \textbf{machine learning} context.
 \item We want \textbf{robust solutions} to \textbf{engineering problems}.
@@ -2473,7 +2812,7 @@ After a \alert{million} iterations and \alert{days of computing} the \textbf{rel
 
 \begin{frame}\frametitle{}
 \begin{center}\Large
-Section 3\\
+Section 4\\
 Algorithms for OUU\\
 Part II: Empirical Approximation
 \end{center}
@@ -2615,7 +2954,7 @@ H(z,\xi) v = \bm B(\xi)^*p(\xi) - \nabla_{zu} \mathcal{L}(u(\xi),z,\lambda(\xi))
 
 
 
-\begin{frame}\frametitle{Disadvantages (Opportunities!)}
+\begin{frame}\frametitle{Disadvantages \alert{(Opportunities?)}}
 \begin{exampleblock}{}
 \begin{itemize}
 \visible<1->{
