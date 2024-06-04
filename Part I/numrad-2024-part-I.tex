@@ -192,6 +192,8 @@ Incorporating uncertainty into this workflow adds several new tasks:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}\frametitle{}
 \begin{center}\Large
+Section 1\\
+Part I:\\
 Modeling: Deterministic and stochastic settings.
 \end{center}
 \end{frame}
@@ -291,7 +293,8 @@ Modeling: Deterministic and stochastic settings.
 
 \begin{frame}\frametitle{Do we \alert{really} know the inputs?}
 \begin{exampleblock}{}
-Even if I know the ``true'' model, do I...
+\begin{minipage}{0.5\textwidth}
+    Even if I know the ``true'' model, do I...
 \begin{itemize}
 \item ...know all the real input parameters?
 \item ...have I estimated them from data? 
@@ -299,6 +302,17 @@ Even if I know the ``true'' model, do I...
 \begin{itemize}
 \item What if I don't fully \textbf{trust} the ``true'' model? 
 % \item Can I use a simpler model by replacing the inputs with \textbf{random parameters} after \textbf{learning} their distributions from \textbf{data}?
+\end{itemize}
+\end{minipage}
+\begin{minipage}{0.4\textwidth}
+    \begin{figure}
+        \centering
+        \includegraphics[width=\textwidth,keepaspectratio]{Part I/figures/brain-mesh.png}
+         \caption{Tracer concentration estimates (J. Riseth et al \cite{})}
+        \label{fig:enter-label}
+    \end{figure}
+\end{minipage}
+\begin{itemize}
 \item We don't wish to \alert{quantify uncertainty}, but \alert{make optimal decisions} in the face of uncertainty.
 \end{itemize}
 \end{exampleblock}
@@ -404,21 +418,21 @@ After incorporating uncertainty:
 
 \begin{frame}\frametitle{Choosing an Objective}
 
+% \only<1>{
+% \begin{example}[Optimization of Optoelectronics]
+% \begin{itemize}
+% \item  \bm $\varphi \sim$ layout of materials, $\bm u \sim$ material displacement, $\Theta \sim$ first eigenmode.
+% \item $\int_\Omega j(\bm\varphi,\Theta) \mathrm{tr} e(\bm u) \ \mathrm{d}x \sim$ force overlap of Ge, high tensile strain, $\mathrm{supp}\,\Theta$ 
+% \item $\alpha f_{\rm GL}(\bm\varphi,\varepsilon) \sim$ regularizes material boundaries
+% \item $J(\bm \varphi, \Theta, \bm u) 
+% := 
+% \int_\Omega j(\bm\varphi,\Theta) \mathrm{tr} e(\bm u) \ \mathrm{d}x
+% +
+% \alpha f_{\rm GL}(\bm\varphi,\varepsilon)$.
+% \end{itemize}
+% \end{example}
+% }
 \only<1>{
-\begin{example}[Optimization of Optoelectronics]
-\begin{itemize}
-\item  \bm $\varphi \sim$ layout of materials, $\bm u \sim$ material displacement, $\Theta \sim$ first eigenmode.
-\item $\int_\Omega j(\bm\varphi,\Theta) \mathrm{tr} e(\bm u) \ \mathrm{d}x \sim$ force overlap of Ge, high tensile strain, $\mathrm{supp}\,\Theta$ 
-\item $\alpha f_{\rm GL}(\bm\varphi,\varepsilon) \sim$ regularizes material boundaries
-\item $J(\bm \varphi, \Theta, \bm u) 
-:= 
-\int_\Omega j(\bm\varphi,\Theta) \mathrm{tr} e(\bm u) \ \mathrm{d}x
-+
-\alpha f_{\rm GL}(\bm\varphi,\varepsilon)$.
-\end{itemize}
-\end{example}
-}
-\only<2>{
 \begin{example}[Optimal Control: Tracking-Type Functionals]
 \begin{itemize}
 \item Minimize distance of $u$ to $u_d$ (desired state) with minimal cost $\alpha > 0$.
@@ -428,7 +442,7 @@ J(u,z) := \frac{1}{2} \| u - u_{d} \|^2_{L^2(D)} + \frac{\alpha}{2} \| z \|^2_{L
 \end{itemize}
 \end{example}
 }
-\only<3>{
+\only<2>{
 \begin{example}[Minimal Compliance in Topology Optimization]
 \begin{itemize}
 \item Find a material density $z : D \to \mathbb R$ that minimizes compliance 
@@ -518,6 +532,8 @@ For now, we will consider the objectives $\risk[\mathcal{J}(S(z))]$ and specify 
 
 \begin{frame}\frametitle{}
 \begin{center}\Large
+Section 1\\
+Part II:\\
 Examples: Making the discussion concrete.
 \end{center}
 \end{frame}
@@ -587,58 +603,61 @@ traction forces $\alert{g}$
 \end{exampleblock}
 \end{frame}
 
-\begin{frame}\frametitle{Ex: Chemical Vapor Deposition}
-\begin{exampleblock}{}
-\smaller
-\begin{minipage}{0.29\textwidth}
-  \centering
-    \begin{tikzpicture}[scale=2.2]
-      \node[inner sep=0pt] (result) at (0.5,0.5)
-        {\includegraphics[width=0.72\textwidth]{Part I/figures/mean_uncontrolled_velocity_vort.pdf}};
-      \draw[line width=1pt] (0,0) rectangle (1,1) node[pos=0.5] {$D$};
-      \draw[line width=1pt, blue] (0,1) parabola bend (1/6,19/18) (1/3,1);
-      \draw[line width=1pt, blue] (1/3,1) parabola bend (1/2,8/9) (2/3,1) node[above, xshift=-0.4cm] {In/Outflow};
-      \draw[line width=1pt, blue] (2/3,1) parabola bend (5/6,19/18) (1,1);
-      \draw[line width=1.5pt, red] (0,0) -- (1,0) node[below left, xshift=-0.3cm] {Substrate};
-      \draw[line width=1.5pt, black!70!green] (0,0) -- (0,1) node[left, xshift=-0.3cm, yshift=-0.5cm, rotate=90] {Control};
-      \draw[line width=1.5pt, black!70!green] (1,0) -- (1,1) node[right, xshift=0.3cm, yshift=-0.5cm, rotate=-90] {Control};
-    \end{tikzpicture}
-\end{minipage}\hfill
-\begin{minipage}{0.65\textwidth}\vspace{-3mm}
-\[
-  \min_{z\in\Zad}\; \frac{1}{2}{\color{blue}\risk}\left[\int_{D} (\nabla\times V(z))
-    \,\mathrm{d}x\right] + \frac{\gamma}{2}\int_{\Gamma_c} |z|^2 \,\mathrm{d}x
-\]
-where $(V(z),P(z),T(z)) = (v,p,\tau)$ solves  \vspace{-1ex}
-\begin{align*}
-  -\alert{\nu(\omega)}\nabla^2 v + (v\cdot\nabla)v + \nabla p
-      + \alert{\eta(\omega)} \tau g &= 0
-    && \text{in }D \\
- %\nabla \cdot v &= 0 &&\text{in }D\\
-  -\alert{\kappa(\omega)} \Delta \tau + v\cdot\nabla \tau &= 0
-    && \text{in }D\\
-  \alert{\kappa(\omega)} \nabla \tau\cdot n + \alert{h(\omega)}(z-\tau) &=0
-    && \text{on }\Gamma_c
-\end{align*}
-\end{minipage}
-\begin{itemize}
-\item Find an equilibrium boundary temperature $z : \Gamma_c \to \mathbb R$ that minimizes the vorticity in CVD reactor.
-\item $V$ velocity, $P$ pressure, $T$ temperature.
-\item Possible random inputs:  kinematic viscosity $\alert{\nu}$, thermal expansion coefficient  $\alert{\eta}$, thermal conductivity $\alert{\kappa}$,  heat transfer coefficient due to rugosity $\alert{h}$. 
-\end{itemize}
-\end{exampleblock}
-\end{frame}
+% \begin{frame}\frametitle{Ex: Chemical Vapor Deposition}
+% \begin{exampleblock}{}
+% \smaller
+% \begin{minipage}{0.29\textwidth}
+%   \centering
+%     \begin{tikzpicture}[scale=2.2]
+%       \node[inner sep=0pt] (result) at (0.5,0.5)
+%         {\includegraphics[width=0.72\textwidth]{Part I/figures/mean_uncontrolled_velocity_vort.pdf}};
+%       \draw[line width=1pt] (0,0) rectangle (1,1) node[pos=0.5] {$D$};
+%       \draw[line width=1pt, blue] (0,1) parabola bend (1/6,19/18) (1/3,1);
+%       \draw[line width=1pt, blue] (1/3,1) parabola bend (1/2,8/9) (2/3,1) node[above, xshift=-0.4cm] {In/Outflow};
+%       \draw[line width=1pt, blue] (2/3,1) parabola bend (5/6,19/18) (1,1);
+%       \draw[line width=1.5pt, red] (0,0) -- (1,0) node[below left, xshift=-0.3cm] {Substrate};
+%       \draw[line width=1.5pt, black!70!green] (0,0) -- (0,1) node[left, xshift=-0.3cm, yshift=-0.5cm, rotate=90] {Control};
+%       \draw[line width=1.5pt, black!70!green] (1,0) -- (1,1) node[right, xshift=0.3cm, yshift=-0.5cm, rotate=-90] {Control};
+%     \end{tikzpicture}
+% \end{minipage}\hfill
+% \begin{minipage}{0.65\textwidth}\vspace{-3mm}
+% \[
+%   \min_{z\in\Zad}\; \frac{1}{2}{\color{blue}\risk}\left[\int_{D} (\nabla\times V(z))
+%     \,\mathrm{d}x\right] + \frac{\gamma}{2}\int_{\Gamma_c} |z|^2 \,\mathrm{d}x
+% \]
+% where $(V(z),P(z),T(z)) = (v,p,\tau)$ solves  \vspace{-1ex}
+% \begin{align*}
+%   -\alert{\nu(\omega)}\nabla^2 v + (v\cdot\nabla)v + \nabla p
+%       + \alert{\eta(\omega)} \tau g &= 0
+%     && \text{in }D \\
+%  %\nabla \cdot v &= 0 &&\text{in }D\\
+%   -\alert{\kappa(\omega)} \Delta \tau + v\cdot\nabla \tau &= 0
+%     && \text{in }D\\
+%   \alert{\kappa(\omega)} \nabla \tau\cdot n + \alert{h(\omega)}(z-\tau) &=0
+%     && \text{on }\Gamma_c
+% \end{align*}
+% \end{minipage}
+% \begin{itemize}
+% \item Find an equilibrium boundary temperature $z : \Gamma_c \to \mathbb R$ that minimizes the vorticity in CVD reactor.
+% \item $V$ velocity, $P$ pressure, $T$ temperature.
+% \item Possible random inputs:  kinematic viscosity $\alert{\nu}$, thermal expansion coefficient  $\alert{\eta}$, thermal conductivity $\alert{\kappa}$,  heat transfer coefficient due to rugosity $\alert{h}$. 
+% \end{itemize}
+% \end{exampleblock}
+% \end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Theory}
 
 \begin{frame}\frametitle{}
 \begin{center}\Large
-Theory: How to treat random PDEs in practice?
+Section 1\\
+Part III:\\
+Theory: How to handle PDE-constraints
 \end{center}
 \end{frame}
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Theory}
-\begin{frame}\frametitle{PDE constraints}
+\begin{frame}\frametitle{PDE-constraints}
 \visible<1->{
 \begin{exampleblock}{}
 A PDE-constraint can be viewed as requiring
@@ -799,7 +818,7 @@ u(s)
 \visible<1->{
 \item For $u \in C^{\infty}_{c}(D)$, define the norm $\| \cdot \|_{U}$ by
 \[
-\| u \|^2_{U} := \int_{D} \nabla u(x) \cdot \nabla v(x).
+\| u \|^2_{U} := \int_{D} \nabla u(x) \cdot \nabla u(x) \, \mathrm{d}x.
 \]
 \item \textbf{Recall:} Closure of $C^{\infty}_{c}(D)$ w.r.t. $\| \cdot \|_{U}$ is the separable Hilbert space $U := H^1_0(D)$.
 }
@@ -945,6 +964,7 @@ where $B : \Omega \to \mathcal{L}(Z, \cU^*)$ is, e.g., bounded and measurable in
 }
 \visible<5->{
 \item This defines a continuously Fr\'echet differentiable control-to-state mapping $z \mapsto S(z)$.
+\item The mapping has a simple form: $S(z) = \mathbf{A}^{-1}\mathbf{B}(z) + u_{f}$, with $u_f \in \mathcal{U}$ constant.
 }
 \end{itemize}
 \end{exampleblock}
@@ -1034,221 +1054,11 @@ where $B : \Omega \to \mathcal{L}(Z, \cU^*)$ is, e.g., bounded and measurable in
 % \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Algorithms and Numerical Solution}
-
-\begin{frame}\frametitle{}
-\begin{center}\Large
-Algorithms and Numerical Solution
-\end{center}
-\end{frame}
-
-% \begin{frame}\frametitle{How can I solve the optimization problem numerically?}
-% \begin{block}{}
-% As mentioned above, there are two approaches
-% \begin{itemize}
-% \item Reduced space approach
-% \item Full space approach
-% \end{itemize}
-% \end{block}
-
-% \begin{block}{}\centering
-% We highlight the main points for the \textbf{deterministic reduced space} approach.
-% \end{block}
-
-% \begin{block}{}\centering
-% The full space approach is especially important for PDEs with non-unique solutions, e.g., stationary Allen-Cahn (p. 17 above).
-% \end{block}
-% \end{frame}
-
-\begin{frame}\frametitle{Two essential computations}
-\begin{exampleblock}{}
-\begin{itemize}
-\item How do we efficiently \textbf{compute gradients} in the reduced space setting?
-\item How do we efficiently \textbf{compute Hessian-vector products} in the reduced space setting?
-% \item The PDE is now implicitly satisfied. 
-% \item There may still exist control and state constraints.
-% \item The PDE-constraint is formulated in function spaces $U, Z, W$, which are typically Hilbert spaces; in some settings general Banach spaces.
-% \item Efficient algorithms need to be ``aware'' of the original function spaces:
-% \begin{enumerate}
-% \item Inner products, dual norms, etc. should be implemented with the proper discrete counterpart.
-% \item Gradients/Hessians of the objective, constraints, and solution operators should be calculated using the associated discrete Riesz mappings.
-% \end{enumerate}
-% \item This ensures (usually) \textbf{mesh independent} behavior and proper \textbf{scaling} by mesh refinements.
-\end{itemize}
-\end{exampleblock}
-
-\visible<2->{
-\begin{exampleblock}{}
-\begin{itemize}
-    \item We only discuss the deterministic case.
-    % \item These are essential for all competitive optimization algorithms.
-    \item The \textbf{Hessian} is \alert{never} available, but \textbf{Hessian-vector products} allow us to apply \textbf{Newton's method} and its variants.
-\end{itemize}
-\end{exampleblock}
-}
-\end{frame}
-
-\begin{frame}\frametitle{Computing the Gradient}
-\begin{exampleblock}{}
-\begin{itemize}
-\visible<1->{
-\item Given $z \in Z$, calculate \textbf{state} $u = S(z)$ by solving $e(u,z) = 0$.
-}
-\visible<2->{
-\item Given $u$, solve \textbf{adjoint equation} for $\lambda = P(z)$: $e_{u}(u,z)^* \lambda = -J'_u(u,z)$.
-}
-\visible<3->{
-\item Given $z,u,\lambda$ calculate the full gradient 
-\[
-\nabla \mathcal{J}(z) = e_{z}(u,z)^* \lambda + \nabla J_u(u,z).\pause
-\]
-}\vspace{-3ex}
-\visible<4->{
-\item This might require an additional solve for the true discrete gradient.
-}
-\visible<5->{
-\item In the linear case, we only require the solution of \textbf{sparse structured linear} systems for $\nabla \mathcal{J}$.
-}
-\visible<6->{
-\item Without \textbf{adjoints}, $\nabla \mathcal{J}$ would contain \alert{large dense matrices} due to the solution operators $S, P$.
-}
-\end{itemize}
-\end{exampleblock}
-\end{frame}
-
-\begin{frame}\frametitle{Hessian-Vector Products}
-\begin{exampleblock}{}
-\begin{itemize}
-\visible<1->{
-\item Define the Lagrangian $L(u,z,\lambda)$:
-$
-L(u,z,\lambda) = J(u,z) + \langle e(u,z), \lambda \rangle_{W,W^*}
-$
-}
-\visible<2->{
-\item Given $z \in Z$, calculate $u = S(z)$ by solving $e(u,z) = 0$.
-}
-\visible<3->{
-\item Given $u$, solve the adjoint equation for $\lambda = P(z)$: $e_{u}(u,z)^* \lambda = -J'_u(u,z)$
-}
-\visible<4->{
-\item Given $u,z$, direction $v$, solve the \textbf{state sensitivity equation} for $w$:
-\[
-e_u(u,z) w = e_z(u,z)v.
-\]
-}\vspace{-4ex}
-\visible<5->{
-\item  Given $u,z,\lambda,w,v$ solve the \textbf{adjoint sensitivity equation} for $p$:
-\[
-e_{u}(u,z)^* p = L''_{uu}(u,z,\lambda)w - L''_{uz}(u,z,\lambda)v.
-\]
-}\vspace{-4ex}
-\visible<6->{
-\item Given $u,z,\lambda,w,v,p$ yields
-\[
-\nabla^2 \mathcal{J}(z) v = e_{z}(u,z)^*p - \nabla_{zu} L(u,z,\lambda)w + \nabla_{zz} L(u,z,\lambda) v.
-\]\vspace{-4ex}
-}
-\end{itemize}
-\end{exampleblock}
-\end{frame}
-
-\begin{frame}\frametitle{New: How should I treat uncertainty numerically?}
-\begin{block}{}
-There are essentially two possibilities (assume for now $\risk = \mathbb E$)
-\begin{itemize}
-\item Sample-before-you-go: \textbf{Replace} underlying $\mathbb P$ by  \textbf{approximation} $\mathbb P_N$ solve
-\[
-\min_{z \in Z_{\rm ad}} \int_{\Omega}\mathcal{J}(S(z))(\omega) \mathrm{d} \mathbb P_{N}(\omega) = \sum_{i=1}^{N} \pi_i \mathcal{J}(S(z))(\omega^i)
-\]
-where $\pi_i$ are given weights for the samples $i = 1,\dots,  N$.\pause
-\item Sample-while-you-go: For fixed step sizes $\gamma_1,\dots,\gamma_N$ approximate the solution $z^{\star}$ using \textbf{stochastic gradients}
-\[
-G_i :=  S'(z_i,\omega^i)^* \nabla \mathcal{J}(S(z^i,\omega^i)) \quad i=1,\dots,N
-\]
-with a sequence $\{z^i\}$ given by (for example)
-\[
-z^{i+1} = \mathrm{Proj}_{Z_{\rm ad}}(z^i - \gamma^i G_i).
-\]
-\item Batches and second-order information can be incorporated. 
-\end{itemize}
-\end{block}
-\end{frame}
-
-\begin{frame}\frametitle{New: How should I treat uncertainty numerically?}
-\begin{block}{}
-\centering
-We discuss the pros and cons in detail in Part II of the course.
-\end{block}
-\begin{block}{Brief Comments I}
-\begin{itemize}
-\item ``Sample-before-you-go'' covers all manner of empirical approximations: Monte Carlo, Quasi-Monte Carlo, Deterministic Quadrature, ... 
-\item Sometimes called Sample Average Approximation (SAA)
-\item Yields a deterministic PDE-constrained problem that can be solved with existing approaches.
-\item \textbf{These are not optimization algorithms.}
-\end{itemize}
-\end{block}
-
-\begin{block}{Brief Comments II}
-\begin{itemize}
-\item ``Sample-while-you-go'' has its origins in Stochastic Approximation. 
-\item Many variants with different step size rules, half-steps, extrapolations, etc.
-\item Immensely popular in machine learning
-\item \textbf{These are (typically first-order) algorithms.}
-\end{itemize}
-\end{block}
-\end{frame}
-
-
-\begin{frame}\frametitle{Stopping Criteria}
-\begin{exampleblock}{}
-\begin{itemize}
-\item \textbf{When} to stop with \textbf{sample-before-you-go}: Use optimality conditions.
-\visible<2->{
-\item Define
-\[
-\mathrm{res}_k := z_{k} - \mathrm{Proj}_{\Zad}(z_{k} - \mathbb E_{\bbp_{N}}\left[\cJ(S(z_{k}))\right])
-\]
-and stop when
-\[
-\| \mathrm{res}_{k} \|
-\le
-\tau_{\rm rel}\| \mathrm{res}_{0} \| + \tau_{\rm abs},
-\]
-where $\tau_{\rm rel} > 0$ and $\tau_{\rm abs} > 0$ are absolute and relative tolerances, respectively.
-}
-\visible<3->{
-\item Knowing \textbf{when} to stop the \textbf{sample-as-you-go} algorithms is more difficult.
-}
-\visible<4->{
-\item The  basic convergence theory usually only provides statements on the objective functions. 
-}
-\visible<5->{
-\item In \alert{both} settings, the ``solution'' $z^{\star}(\bbp_{N})$ is \alert{dependent on the realization of random processes}. 
-}
-\visible<6->{
-\item Ideally, we would know what happens to $z^{\star}(\mathbb P_{N})$ as $N \to +\infty$. More on this later...
-}
-\end{itemize}
-\end{exampleblock} 
-\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Risk-Averse Decision Making}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}\frametitle{}
 \begin{center}\Large
-Section 2: \\
+Section 1\\
+Part IV:\\
 Risk-Averse Decision Making 
 \end{center}
 \end{frame}
@@ -1513,23 +1323,46 @@ t + \frac{1}{1-\beta} \mathbb E[(X - t)_+]\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \begin{frame}\frametitle{}
+% \begin{center}\Large
+% Section 3: \\
+% Optimization under Uncertainty in $\infty$-Dimensions \\
+% Part I: Computing Consistent Gradients
+% \end{center}
+% \end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Algorithms and Numerical Solution}
+
 \begin{frame}\frametitle{}
 \begin{center}\Large
-Section 3: \\
-Optimization under Uncertainty in $\infty$-Dimensions \\
-Part I: Computing Consistent Gradients
+Section 1\\
+Part V:\\
+Algorithms: Computing derivatives and treating uncertainty
 \end{center}
 \end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% \begin{frame}\frametitle{How can I solve the optimization problem numerically?}
+% \begin{block}{}
+% As mentioned above, there are two approaches
+% \begin{itemize}
+% \item Reduced space approach
+% \item Full space approach
+% \end{itemize}
+% \end{block}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{OUU in $\infty$-Dimensions}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \begin{block}{}\centering
+% We highlight the main points for the \textbf{deterministic reduced space} approach.
+% \end{block}
 
-\subsection{Computing Consistent Gradients}
+% \begin{block}{}\centering
+% The full space approach is especially important for PDEs with non-unique solutions, e.g., stationary Allen-Cahn (p. 17 above).
+% \end{block}
+% \end{frame}
+
 \begin{frame}\frametitle{OUU in $\infty$-Dimensions?}
 \visible<1->{
 \vspace{-1ex}
@@ -1659,6 +1492,603 @@ $M_h$ is the mass matrix associated with the discrete $L^2$-inner product.
 \end{example}
 \end{frame}
 
+
+\begin{frame}\frametitle{Two essential computations}
+\begin{exampleblock}{}
+\begin{itemize}
+\item How do we efficiently \textbf{compute gradients} in the reduced space setting?
+\item How do we efficiently \textbf{compute Hessian-vector products} in the reduced space setting?
+% \item The PDE is now implicitly satisfied. 
+% \item There may still exist control and state constraints.
+% \item The PDE-constraint is formulated in function spaces $U, Z, W$, which are typically Hilbert spaces; in some settings general Banach spaces.
+% \item Efficient algorithms need to be ``aware'' of the original function spaces:
+% \begin{enumerate}
+% \item Inner products, dual norms, etc. should be implemented with the proper discrete counterpart.
+% \item Gradients/Hessians of the objective, constraints, and solution operators should be calculated using the associated discrete Riesz mappings.
+% \end{enumerate}
+% \item This ensures (usually) \textbf{mesh independent} behavior and proper \textbf{scaling} by mesh refinements.
+\end{itemize}
+\end{exampleblock}
+
+\visible<2->{
+\begin{exampleblock}{}
+\begin{itemize}
+    \item We only discuss the deterministic case.
+    % \item These are essential for all competitive optimization algorithms.
+    \item The \textbf{Hessian} is \alert{never} available, but \textbf{Hessian-vector products} allow us to apply \textbf{Newton's method} and its variants.
+\end{itemize}
+\end{exampleblock}
+}
+\end{frame}
+
+\begin{frame}\frametitle{Computing the Gradient}
+\begin{exampleblock}{}
+\begin{itemize}
+\visible<1->{
+\item Given $z \in Z$, calculate \textbf{state} $u = S(z)$ by solving $e(u,z) = 0$.
+}
+\visible<2->{
+\item Given $u$, solve \textbf{adjoint equation} for $\lambda = P(z)$: $e_{u}(u,z)^* \lambda = -J'_u(u,z)$.
+}
+\visible<3->{
+\item Given $z,u,\lambda$ calculate the full gradient 
+\[
+\nabla \mathcal{J}(z) = e_{z}(u,z)^* \lambda + \nabla J_u(u,z).\pause
+\]
+}\vspace{-3ex}
+\visible<4->{
+\item This might require an additional solve for the true discrete gradient.
+}
+\visible<5->{
+\item In the linear case, we only require the solution of \textbf{sparse structured linear} systems for $\nabla \mathcal{J}$.
+}
+\visible<6->{
+\item Without \textbf{adjoints}, $\nabla \mathcal{J}$ would contain \alert{large dense matrices} due to the solution operators $S, P$.
+}
+\end{itemize}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}\frametitle{Hessian-Vector Products}
+\begin{exampleblock}{}
+\begin{itemize}
+\visible<1->{
+\item Define the Lagrangian $L(u,z,\lambda)$:
+$
+L(u,z,\lambda) = J(u,z) + \langle e(u,z), \lambda \rangle_{W,W^*}
+$
+}
+\visible<2->{
+\item Given $z \in Z$, calculate $u = S(z)$ by solving $e(u,z) = 0$.
+}
+\visible<3->{
+\item Given $u$, solve the adjoint equation for $\lambda = P(z)$: $e_{u}(u,z)^* \lambda = -J'_u(u,z)$
+}
+\visible<4->{
+\item Given $u,z$, direction $v$, solve the \textbf{state sensitivity equation} for $w$:
+\[
+e_u(u,z) w = e_z(u,z)v.
+\]
+}\vspace{-4ex}
+\visible<5->{
+\item  Given $u,z,\lambda,w,v$ solve the \textbf{adjoint sensitivity equation} for $p$:
+\[
+e_{u}(u,z)^* p = L''_{uu}(u,z,\lambda)w - L''_{uz}(u,z,\lambda)v.
+\]
+}\vspace{-4ex}
+\visible<6->{
+\item Given $u,z,\lambda,w,v,p$ yields
+\[
+\nabla^2 \mathcal{J}(z) v = e_{z}(u,z)^*p - \nabla_{zu} L(u,z,\lambda)w + \nabla_{zz} L(u,z,\lambda) v.
+\]\vspace{-4ex}
+}
+\end{itemize}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}\frametitle{Uncertainty in Computation}
+\begin{exampleblock}{}
+% There are essentially two possibilities (assume for now $\risk = \mathbb E$)
+\begin{itemize}
+\item \textbf{Sample-before-you-go:} \textbf{Replace} underlying $\mathbb P$ by  \textbf{approximation} $\mathbb P_N$ solve
+\[
+\min_{z \in Z_{\rm ad}} \mathbb E_{\mathbb P_N(\cdot)}[\mathcal{J}(S(z))] = \frac{1}{N}\sum_{i=1}^{N} \mathcal{J}(S(z))(\omega^i)
+\]
+\visible<2->{
+\item \textbf{Sample-while-you-go:} Given positive step sizes $\{\gamma_i\}_{i=1}^N$ approximate the solution $z^{\star}$ using \textbf{stochastic gradients}
+\[
+G_i :=  S'(z_i,\omega^i)^* \nabla \mathcal{J}(S(z^i,\omega^i)) \quad i=1,\dots,N
+\]
+with a sequence $\{z^i\}$ given by (for example)
+\[
+z^{i+1} = \mathrm{Proj}_{Z_{\rm ad}}(z^i - \gamma^i G_i).
+\]
+% \item Batches and second-order information can be incorporated. 
+}
+\end{itemize}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}\frametitle{Uncertainty in Computation}
+\begin{exampleblock}{}
+\begin{itemize}
+\item ``Sample-before-you-go'' covers all manner of empirical approximations: Monte Carlo, Quasi-Monte Carlo, Deterministic Quadrature, Sparse Grids ... 
+\item Sometimes called Sample Average Approximation (SAA)
+\item I will use the term \textbf{Empirical Approximation}.
+\item Yields a deterministic PDE-constrained problem that can be solved with existing approaches.
+\item \textbf{These are not optimization algorithms.}
+\end{itemize}
+\end{exampleblock}
+\visible<2->{
+\begin{exampleblock}{}
+\begin{itemize}
+\item ``Sample-while-you-go'' has its origins in \textbf{Stochastic Approximation}. 
+\item I will use the term \textbf{Stochastic Approximation}.
+\item Many variants with different step size rules, half-steps, extrapolations, etc.
+\item Immensely popular in machine learning
+\item \textbf{These are (typically first-order) algorithms.}
+\end{itemize}
+\end{exampleblock}
+}
+\end{frame}
+
+
+\begin{frame}\frametitle{Stopping Criteria}
+\begin{exampleblock}{}
+\begin{itemize}
+\item \textbf{When} to stop with \textbf{sample-before-you-go}: Use optimality conditions.
+\visible<2->{
+\item Define
+\[
+\mathrm{res}_k := z_{k} - \mathrm{Proj}_{\Zad}(z_{k} - \mathbb E_{\bbp_{N}}\left[\cJ(S(z_{k}))\right])
+\]
+and stop when
+\[
+\| \mathrm{res}_{k} \|
+\le
+\tau_{\rm rel}\| \mathrm{res}_{0} \| + \tau_{\rm abs},
+\]
+where $\tau_{\rm rel} > 0$ and $\tau_{\rm abs} > 0$ are absolute and relative tolerances, respectively.
+}
+\visible<3->{
+\item Knowing \textbf{when} to stop the \textbf{sample-as-you-go} algorithms is more difficult.
+}
+\visible<4->{
+\item The  basic convergence theory usually only provides statements on the objective functions. 
+}
+\visible<5->{
+\item In \alert{both} settings, the ``solution'' $z^{\star}(\bbp_{N})$ is \alert{dependent on the realization of random processes}. 
+}
+\visible<6->{
+\item Ideally, we would know what happens to $z^{\star}(\mathbb P_{N})$ as $N \to +\infty$. More on this later...
+}
+\end{itemize}
+\end{exampleblock} 
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \section{Risk-Averse Decision Making}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \begin{frame}\frametitle{}
+% \begin{center}\Large
+% Section 2: \\
+% Risk-Averse Decision Making 
+% \end{center}
+% \end{frame}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \subsection{Risk Models}
+% \begin{frame}\frametitle{Robust Optimization}
+% \visible<1->{
+% \begin{exampleblock}{Motivation}
+% \begin{itemize}
+% \item An \textbf{uncertainty region} $\Omega$ is known, but \alert{no data} for statistical estimation is available.
+% \item An \textbf{uncertainty region} $\Omega$ is known and data is available, but there is \alert{no room for error}.
+% \item An \textbf{uncertainty region} $\Omega$ is known and data is available, but the \alert{$\mathrm{dim}\, \Omega$ is intractable}.
+% \item The functional $\risk$ should then take the form  
+% \[
+% \risk[X] := \sup_{\omega \in \Omega} X(\omega).
+% \]
+% \end{itemize}
+% \end{exampleblock}
+% }
+% \visible<2->{
+% \begin{exampleblock}{}
+% \begin{itemize}
+% \item The robust PDE-constrained optimization problem takes the general form:
+% \begin{equation}\label{eq:robust}
+% \min_{z \in \Zad}\left\{ \wp(z) + \sup_{\omega \in \Omega} \mathcal{J}(S(z))(\omega) \right\}
+% \end{equation}
+% \item \alert{Hard to solve}: A nonsmooth, possibly nonconvex, $\infty$-dimensional problem. 
+% % %\item The formulation might be overly restrictive/too pessimistic.
+% % \item Existing approaches transform \eqref{eq:robust} into a mathematical program with equilibrium constraints (MPEC). MPECs with PDE operators are very hard to solve numerically.
+% \end{itemize}
+% \end{exampleblock}
+% }
+% \end{frame}
+
+% \begin{frame}\frametitle{Stochastic Order Constraints}
+% \vspace{-2ex}
+% \begin{exampleblock}{Motivation}
+% \begin{itemize}
+% \visible<1->{
+% \item A \textbf{complete probability space} $(\Omega,\cF, \bbp)$ is available.
+% \item A \textbf{benchmark} decision, design, stationary control $z_d \in Z$ or objective value $c$ is given.
+% }
+% \visible<2->{
+% \item The risk-averse PDE-constrained optimization problem might take the general form:
+% \begin{equation}\label{eq:prob}
+% \min_{z \in \Zad} \left\{ \wp(z) + \mathbb E \left[\mathcal{J}(S(z)) \right] : \mathbb P\left\{\cJ(S(z)) < \cJ(S(z_{d}))\right\} \ge p \right\} \quad p \in (0,1).\vspace{-4ex}
+% \end{equation}
+% }
+% \end{itemize}
+% \visible<3->{
+% \begin{center}
+%     \textit{Find $z^{\star} \in \Zad$ that \alert{performs well on average} such that the random variable $\omega \mapsto \mathcal{J}(S(z^{\star}))(\omega) - \cJ(S(z_{d}))(\omega)$ is \alert{negative with probability $p$.}
+%     }    
+% \end{center}
+% }
+% \end{exampleblock}
+% \visible<4->{
+% \begin{exampleblock}{}
+% Many variants available: 
+% \begin{itemize}
+% \item Replace $\cJ(S(z_{d}))$ with a constant $c$ or choose more than one/all $p \in (0,1)$.
+% \item Compare \alert{tails}  of $\cJ(S(z))$ to $\cJ(S(z_{d}))$ over a range of values.
+% \item The constraint function $\varphi(z) := \mathbb P\left\{\cJ(S(z)) \le c \right\}$ is highly nontrivial.
+% \end{itemize}
+% \end{exampleblock}
+% }
+% \end{frame}
+
+
+% \begin{frame}\frametitle{Minimizing the Expectation}
+% \visible<1->{
+% \begin{exampleblock}{Optimization with Risk Measures}
+% \begin{itemize}
+% \item The risk-averse PDE-constrained optimization problem takes the general form:
+% \begin{equation}\label{eq:prob}
+% \min_{z \in \Zad} \left\{ \wp(z) + \risk \left[\mathcal{J}(S(z)) \right] \right\}
+% \end{equation}
+% \item $\risk$ should ``shape'' the distribution of the objective function at an optimal solution $z^{\star}$. 
+% \end{itemize}
+% \end{exampleblock}
+% }
+% \visible<2->{
+% \begin{exampleblock}{Traditional Approach: $\risk = \mathbb E$ (``risk neutral case'')}
+% \begin{itemize}
+% \visible<2->{
+% \item Optimize to achieve best performance \textbf{on average}.
+% \item Q: \alert{What could possibly go wrong?} 
+% }
+% \visible<3->{\item A: Does not account for potentially catastrophic tail events.}
+% \visible<4->{\item Often consider: $\nu \bbe + (1-\nu) \risk$ with $\risk$ being something other than $\mathbb E$, $\nu \in (0,1)$, instead.}
+% \end{itemize}
+% \end{exampleblock}
+% }
+% \end{frame}
+
+% \begin{frame}\frametitle{Mitigating Risk using Risk Measures}
+
+
+% \begin{exampleblock}{Traditional Mean-Var Approach: $\risk = \nu \mathbb E+(1-\nu) \mathbb V$}
+% \begin{itemize}
+% \visible<1->{
+% \item Maximize \textbf{average performance} vs.\ \textbf{minimize variance} $\mathbb V[X] = \mathbb E[(X-\mathbb E[X])^2]$ 
+% \item Q: \alert{What could possibly go wrong?} 
+% }
+% \visible<2->{
+% \item A:  $\mathbb V$ may penalize favorable outlier situations: We are happy if $\cJ(S(z))(\omega) \ll \cJ(S(y))(\omega)$.
+% \item $\mathbb V$ is not monotone w.r.t.\ the partial order on ${L}^{1}(\Omega,\cF, \bbp)$: The pointwise bound
+% \[
+% \cJ(S(z))(\omega) \le \cJ(S(y))(\omega),\; \Pae \omega \in \Omega
+% \]
+% does not guarantee $\mathbb V(\cJ(S(z))) \le \mathbb V(\cJ(S(y)))$. 
+% \item This is not seen to be favorable for optimization.
+% }
+% \end{itemize}
+% \end{exampleblock}
+% \end{frame}
+
+% \begin{frame}\frametitle{Mitigating Risk using Risk Measures}
+% \begin{exampleblock}{Minimize the $\beta$-Quantile: $\risk[X] = \inf\{ \tau : \bbp(X \le \tau) \ge \beta \} $}
+% \begin{itemize}
+% \visible<1->{
+% \item Also know as \textbf{Value-at-Risk} (confidence/risk level $\beta \in (0,1)$).
+% \item Smallest $\tau$ such that with probability $\beta$, $\cJ(S(z))$ does not exceed the value $\tau$.  
+% \item Measures risky (catastrophic) events.
+% }
+% \item Q: \alert{What could possibly go wrong?} 
+% \visible<2->{
+% \item A: $\mathrm{VaR}$ does not account for the size of the tail. 
+% \item A:  $\mathrm{VaR}$ is not subadditive. 
+% \item Obviously difficult to minimize in general.
+% }
+% \end{itemize}
+% \end{exampleblock}
+% \end{frame}
+
+% \begin{frame}\frametitle{Mitigating Risk using Risk Measures}
+% \vspace{-2ex}
+% \begin{exampleblock}{Minimize the $\beta$-Average $\mathrm{VaR}$: $\risk[X] := \frac{1}{1-\beta}\int_{\beta}^{1} \mathrm{VaR}_{\alpha}[X] \mathrm{d}\alpha$}
+% \begin{itemize}
+% \visible<1->{
+% \item Many names:  Excess Loss, Mean Shortfall, Average VaR, Tail VaR. 
+% \item We use \textbf{Conditional Value-at-Risk} ($\mathrm{CVaR}$).
+% \item Minimize the expectation of the tail above the $\beta$-quantile.
+% \begin{center}
+% }
+% \includegraphics[width=0.25\textwidth]{figures/cvar}
+% \end{center}
+% \item CVaR is positively homogeneous, subadditive, monotone on $L^1$, and ``\textbf{translation equivariant}'': 
+% $
+% \mathrm{CVaR}[X + c] = \mathrm{CVaR}[X] + c
+% $
+% for any constant $c \in \mathbb R$.
+% \item CVaR has a convenient form for optimization:
+% \[
+% \mathrm{CVaR}_{\beta}[X] = 
+% \inf_{t \in \mathbb R} 
+% \left\{ 
+% t + \frac{1}{1-\beta} \mathbb E[(X - t)_+]\
+% \right\}
+% \]
+% \end{itemize}
+% \end{exampleblock}
+% \end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \subsection{The Conditional Value-at-Risk}
+% \begin{frame}\frametitle{Basic Properties and Reformulations}
+% \visible<1->{
+% \begin{exampleblock}{}
+% \begin{itemize}
+% \item A risk measure  $\risk : L^1(\Omega,\cF,\bbp) \to \overline{\mathbb R}$ that is\\ \textbf{-convex,\\ -positively homogeneous,\\ -monotonic}\\  \textbf{-translation equivariant} (p. 46)\\ is said to be \textbf{coherent}.
+% \item $\CVaR_{\beta}$ is coherent.
+% \end{itemize}
+% \end{exampleblock}
+% }
+% \visible<2->{
+% \begin{exampleblock}{}
+% \begin{itemize}
+% \item Coherent risk measures are \alert{distributionally robust} wrt the nominal measure $\bbp$. 
+% \item What does that mean and why should I care?
+% \end{itemize}
+% \end{exampleblock}
+% }
+% \end{frame}
+
+
+% \begin{frame}\frametitle{Distributional Robustness and CVaR}
+% \begin{exampleblock}{}
+% \begin{itemize}
+% \item Return to risk neutral case $\risk = \mathbb E$. \alert{$\bbp$ is unknown}, but an iid sample is available.
+% \item  We could use the \textbf{empirical probability measure} $\mathbb P_N$ and consider
+% \[
+% \min_{z \in \Zad} \wp(z) + \frac{1}{N} \sum_{i=1}^{N} \cJ(S(z))(\omega^i).
+% \]
+% \item This is a risk-neutral formulation, but expect \alert{overfitting}.
+% \item We could \alert{incorporate risk aversion} by defining a set of measures 
+% $
+% \mathfrak{A} \subset \mathcal{P}(\Omega),
+% $
+% where $\mathcal{P}(\Omega)$ is the set of all Borel probability measures over $(\Omega,\cF)$, that contains $\mathbb P_{N}$.
+% \item A robust data-driven formulation would then be
+% \[
+% \min_{z \in \Zad} \wp(z) + \sup_{\mathbb Q \in \mathfrak{A}}\mathbb E_{\mathbb Q}\left[ \cJ(S(z))\right].
+% \]
+% \end{itemize}
+% \end{exampleblock}
+% \end{frame}
+
+% \begin{frame}\frametitle{Distributional Robustness and CVaR}
+% \begin{exampleblock}{}
+% \centering 
+%  What is the ``\alert{correct}'' set $\mathfrak{A}$?
+% \end{exampleblock}
+% \visible<2->{
+% \begin{exampleblock}{Examples}
+% \begin{itemize}
+% \item Let $\mathfrak{F}$ be a subset of integrands $f: \Omega \to \mathbb R$. 
+% \item For $\varepsilon > 0$
+% \[
+% \mathfrak{A} := \left\{ \mathbb Q \in \mathcal{P}(\Omega) : \sup_{f \in \mathfrak{F}} \left| \mathbb E_{\mathbb P_{N}}[f] - \mathbb E_{\mathbb Q}[f]\right| \le \varepsilon
+% \right\}
+% \]
+% \item Depending $\mathfrak{F}$ this is, e.g., a Wasserstein-1, Fortet-Mourier, or bounded Lipschitz metric.
+% \item Without further insight, it is hard to see how this connects back to the theory of risk measures.
+% \item The metrics do have the advantage that the support (atoms) can be moved.  
+% \item The more tractable metrics, e.g., Wasserstein, are defined with integrands that have very little to do with the original integrand $\cJ(S(z))$.
+% \end{itemize}
+% \end{exampleblock}
+% }
+% \end{frame}
+
+% \begin{frame}\frametitle{Distributional Robustness and CVaR}
+% \vspace{-1ex}
+% \begin{exampleblock}{}
+% \begin{itemize}
+% \item Using convex analysis, it can be shown in general that
+% $
+% \CVaR{\beta}[X] = \sup_{\vartheta \in \mathfrak{A}} \mathbb E_{\mathbb P}[\vartheta X],
+% $
+% where 
+% \[
+% \mathfrak{A} = \left\{\vartheta \in L^{\infty}(\Omega,\cF,\bbp) \; \left| \; \mathbb E_{\mathbb P}[\vartheta] = 1,\quad 0 \le \vartheta \le \frac{1}{1-\beta} \quad \mathbb P\textrm{-a.s.}\right.\right\}
+% \]
+% \item For $\bbp = \bbp_N$ we have
+% $
+% \mathfrak{A} = \left\{ \vartheta \in \mathbb R^{N} \; \left| \; \sum_{i=1}^{N} \frac{\vartheta_i}{N} = 1,\quad 0 \le \vartheta_i \le \frac{1}{1-\beta} \quad i=1,\dots,N \right.\right\}.
+% $
+% \item This implies 
+% \[
+% \CVaR{\beta}[X] = \sup_{\vartheta}\left\{ \frac{1}{N} \sum_{i=1}^{N} \vartheta_i X(\omega^i) :  \sum_{i=1}^{N} \frac{\vartheta_i}{N} = 1,\quad 0 \le \vartheta_i \le \frac{1}{1-\beta} \quad i=1,\dots,N\right\}
+% \]
+% \item CVaR can therefore be used in a data-driven distributionally robust setting.
+% \item The original weights on $\mathbb P_N$ are readjusted to  $\vartheta_i/N$. 
+% \item Our risk preference, expressed by $\CVaR{\beta}$, determines a meaningful set of probability measures.
+% \end{itemize}
+% \end{exampleblock}
+% \end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \begin{frame}\frametitle{}
+% \begin{center}\Large
+% Section 3: \\
+% Optimization under Uncertainty in $\infty$-Dimensions \\
+% Part I: Computing Consistent Gradients
+% \end{center}
+% \end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Algorithms for OUU}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \subsection{Computing Consistent Gradients}
+% \begin{frame}\frametitle{OUU in $\infty$-Dimensions?}
+% \visible<1->{
+% \vspace{-1ex}
+% \begin{exampleblock}{}
+% \begin{itemize}
+% %\item For the moment,  ignore the PDEs and random inputs.
+% \item We are interested in composite optimization problems of the type:
+% \vspace{-2ex}
+% \[ 
+% \min_{x \in X_{\rm ad}} f(x) + \Phi(F(x)) \text{ over } x \in X.
+% \]\vspace{-2ex}
+% \item $X, Y$ are real \textbf{Hilbert spaces}. 
+% \item $f:X \to \mathbb R$ is typically continuous, convex, \textbf{differentiable}.
+% \item $\Phi: Y \to \mathbb R$ is \textbf{nonsmooth}, convex, positive homogeneous, monotone.
+% \item $F: X \to Y$ is continuous, typically differentiable, \textbf{expensive to evaluate}.
+% \end{itemize}
+% \end{exampleblock}
+% }
+% \visible<2->{
+% \begin{exampleblock}{}
+% \begin{itemize}
+% \item \visible<2->{
+% \textbf{``PDE''-part}: $X$ replaces $\{X_h\}$, $X_h$  finite dim.\ with elements $u_{h}(x) = \sum_{i=1}^{N} u^h_i \varphi^h_i(x)$.
+% }
+% \item \visible<3->{
+% \textbf{``PDE''-part}: $F(x)$ requires the solution of a PDE with input $x$.
+% }
+% \item \visible<4->{
+% \textbf{``Random"-part}: cannot evaluate $F(x)$ or even $F(x_h)$ $x_h \in X_h$.
+% }
+% \item \visible<5->{Derivatives are \textbf{dual} objects, gradients are \textbf{primal}.
+% }
+% \item \visible<6->{To compute $x_{k} - \gamma_k\nabla f(x_k)$ in an algorithm, we first need
+%  $\nabla f(x) = \mathfrak{R}_{\rm Riesz} f'(x)$.}
+% %\item $R^{-1}_{\rm Riesz}$ is usually not the identity {\rm Id}; may require a PDE solve.
+% \end{itemize}
+% \end{exampleblock}
+% }
+% \end{frame}
+
+% \begin{frame}\frametitle{Riesz Mappings}
+% \begin{example}
+% \begin{itemize}
+% \item 
+% \visible<1->{
+% Let $D \subset \mathbb R^n$ be open and bounded. Let $A \subset D$ be Lebesgue measurable with $|A| > 0$.
+% }
+% \item 
+% \visible<2->{
+% For $x \in D$, set $\varphi(x) = 1$ if $x \in A$ and $0$ otherwise.
+% }
+% \item 
+% \visible<3->{
+% Since $H^1_0(D) \subset L^2(D)$ and $\varphi$ is bounded and measurable, we see that 
+% \[
+% H^1_0(D) \ni u \mapsto (\varphi, u)_{L^2(D)}
+% \]
+% defines a bounded linear functional on $H^1_0(D)$.
+% }
+% \item 
+% \visible<4->{
+% We can therefore identity $\varphi$ with an element of $H^{-1}(D) = (H^1_0(D))^*$.
+% }
+% \item 
+% \visible<5->{
+% It's tempting to make the \alert{fallacious argument}:  
+% \begin{center}
+% \textit{$H^1_0(D)$ is a Hilbert space, I can just identify it with its dual and treat elements in $H^{-1}(D)$ like they are in $H^1_0(D)$.}
+% \end{center}
+% }
+% \item \visible<6->{ But $\varphi$ will have \textbf{jumps} in general, so $\varphi \not\in H^1_0(D)$!
+% }
+% \end{itemize}
+% \end{example}
+% \end{frame}
+
+% \begin{frame}\frametitle{Riesz Mappings}
+% \begin{example}
+% \begin{itemize}
+% \item 
+% \visible<1->{The \textbf{Riesz Representation Theorem} states: Let $H$ be a real Hilbert space and $\varphi \in H^*$ (the topological dual of $H$). Then there exists a unique element $u_{\varphi} \in H$ such that 
+% \[
+% \langle \varphi, v \rangle_{H^*,H} = (u_{\varphi}, v)_{H} \quad \forall v \in H\text{ and } 
+% \|\varphi\|_{H^*} = \|u_{\varphi} \|_{H}
+% \]
+% }\vspace{-4ex}
+% \item \visible<2->{...so if $\varphi$ above is in $H^{-1}(D)$, then there exists a unique $u_{\varphi} \in H^1_0(D)$ such that
+% \[
+% (u_{\varphi}, v)_{H^1_0(D)} = \langle \varphi, v \rangle_{H^{-1}(D),H^1_0(D)} \quad \forall v \in H^1_0(D).
+% \]
+% }\vspace{-4ex}
+% \item \visible<3->{Since 
+% $
+% (u_{\varphi}, v)_{H^1_0(D)} = (\nabla u_{\varphi}, \nabla v)_{L^2(D)}$ $\forall v \in H^1_0(D), 
+% $ we have
+% \[
+% u_{\varphi} = (-\Delta)^{-1} \varphi,
+% \]
+% i.e., $\mathfrak{R}_{\rm Riesz}$ requires the solution of Poisson problem in $H^1_0(D)$.
+% }
+% \end{itemize}
+% \end{example}
+% \end{frame}
+
+% \begin{frame}\frametitle{Using the Correct Discrete Gradients}
+% \vspace{-2ex}
+% \begin{example}[]
+% \begin{itemize}
+% \item
+% $f : L^2(D) \to \mathbb R$  is defined via continuous bilinear form.
+% \item 
+% $X_h \subset L^2(D)$ is a finite dim.\ subspace defined by the nodal basis from the FEM. 
+% \item 
+% $u_h \in X_h$ is associated with coefficient vector $\mathbf{u}_h \in \mathbb R^n$ \pause
+% \item 
+% $f_h : \mathbb R^n \to \mathbb R$ is the FE discretization of $f$, e.g.
+% \[
+% f_h(\mathbf{u}_h) = \frac{1}{2} \mathbf{u}^T_h L_h \mathbf{u}_h
+% \]
+% \item The correct gradient for a numerical approach would then be
+% \[
+% \mathfrak{R}_{L^2}(f_h'(\mathbf{u}_h)) = M_h^{-1} L_h \mathbf{u}_h.
+% \]
+% $M_h$ is the mass matrix associated with the discrete $L^2$-inner product.
+% \item If $f(u) = (u,u)_{L^2(D)}$, then $\mathfrak{R}_{L^2}(f_h'(\mathbf{u}_h))$ is just the \textbf{vector of nodal values} $\bm u_h$, \alert{not} $M_h \bm u_h$!
+% \end{itemize}
+% \end{example}
+% \end{frame}
+
 % \begin{frame}\frametitle{Using the Correct Discrete Gradients}
 % \begin{example}[]
 % \begin{itemize}
@@ -1739,16 +2169,24 @@ $M_h$ is the mass matrix associated with the discrete $L^2$-inner product.
 % \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% \begin{frame}\frametitle{}
+% \begin{center}\Large
+% Section 3\\
+% Algorithms for OUU:\\
+% A Deeper Look at Numerical Algorithms
+% \end{center}
+% \end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Stochastic Approximation: Pros, Cons, and Behavior in Practice}
 \begin{frame}\frametitle{}
 \begin{center}\Large
-Section 3: \\
-Optimization under Uncertainty in $\infty$-Dimensions \\
-Part II: A First Look at Numerical Algorithms
+Section 3\\
+Algorithms for OUU:\\
+Part I: Stochastic Approximation
 \end{center}
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{SA Methods: Pros, Cons, and Behavior in Practice}
 \begin{frame}\frametitle{Basic SA-Type Algorithm}
 \begin{exampleblock}{Preliminary Remarks}
 \begin{itemize}
@@ -2035,75 +2473,171 @@ After a \alert{million} iterations and \alert{days of computing} the \textbf{rel
 
 \begin{frame}\frametitle{}
 \begin{center}\Large
-Section 3: \\
-Optimization under Uncertainty in $\infty$-Dimensions \\
-Part III: Empirical Approximation and Computations for Second-Order Methods
+Section 3\\
+Algorithms for OUU\\
+Part II: Empirical Approximation
 \end{center}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{EA Methods: Pros and Cons} 
+\subsection{Empirical Approximation: Pros, Cons, and Behavior in Practice} 
 
 \begin{frame}\frametitle{Empirical Approximation}
 
-\begin{block}{}
+\begin{exampleblock}{}
 \begin{itemize}
 \item
-In our canonical example, we can expand the decision space by a real-valued decision variable $t$ and consider an objective of the form
+In the SA example, we expand the decision space by $t \in \mathbb R$ and consider
 \[
  f(x) = \mathbb E_{\mathbb P_{\bm \xi}}[F(x,\cdot)] = \int_{\Xi} F(x,\xi) \, \mathrm{d} \mathbb P(\xi)
  \]
- where $F$ is nonsmooth and convex. Thus, the objective involves a high-dimensional integral. 
- \item We use quadrature everywhere in PDE-constrained optimization, why not here? \item What are our options if $\mathrm{dim}\, \Xi >> 1$?
- \end{itemize}\pause
-\end{block}
-
-\begin{block}{}
+ \item  $F$ is \alert{nonsmooth} and convex. 
+ \item $f$ involves a potentially high-dimensional integral. 
+ \item We use quadrature everywhere in PDE-constrained optimization, why not here? 
+ \item What are our options if $\mathrm{dim}\, \Xi \gg 1$?
+ \end{itemize}
+\end{exampleblock}
+\visible<2->{
+\begin{exampleblock}{}
 \begin{itemize}
-\item EA $=$ \textbf{E}mpirical \textbf{A}pproximations. Sometimes called ``\textbf{S}ample \textbf{A}verage \textbf{A}pproximation'' (SAA).
-\item Includes
+\item EA $=$ \textbf{E}mpirical \textbf{A}pproximations
 \begin{itemize}
 \item \textbf{M}onte \textbf{C}arlo (MC), 
 \item \textbf{Q}uasi-\textbf{M}onte \textbf{C}arlo (QMC), Randomized QMC,
 \item Deterministic quadrature approaches, e.g., \textbf{sparse grids}.
 \end{itemize}
-\item Sample-\textbf{before}-you-go: Replace $f(x)$ by $\widehat{f}_{N}(x) = \int_{\Xi} F(x,\xi) \, \mathrm{d} \bbp_{N}(\xi) = \sum_{i=1}^{N} \pi_i F(x,\xi^i)$
+% \item Sample-\textbf{before}-you-go: Replace $f(x)$ by $\widehat{f}_{N}(x) = \int_{\Xi} F(x,\xi) \, \mathrm{d} \bbp_{N}(\xi) = \sum_{i=1}^{N} \pi_i F(x,\xi^i)$
 \end{itemize}
-\end{block}
+\end{exampleblock}
+}
 \end{frame}
-\begin{frame}\frametitle{Pros}
-\begin{block}{}
+
+\begin{frame}\frametitle{Advantages}
+\begin{exampleblock}{}
 \begin{itemize}
-\item Recall again \eqref{eq:model_ra_op_prob_exp}, using an EA for the expectation leads to
-\begin{equation*}%\label{eq:model_ra_op_prob_exp_N}
-\aligned
-\mathrm{min}
-\left\{ 
-\widehat{f}_{N}(x) =
-\frac{1}{N} \sum_{i=1}^{N}
-\left[
-t + \frac{1}{2-2\beta}( \| S(z,\xi^i) - u_d \|^2_{L^2(D)} - 2t)_+ 
-  + \frac{\alpha}{2} \| z \|^2_{Z}
-\right] \text{ over } (z,t) \in \Zad \times \mathbb R 
-\right\}.
-\endaligned
-\end{equation*}
+% \item Recall again \eqref{eq:model_ra_op_prob_exp}, using an EA for the expectation leads to
+% \begin{equation*}%\label{eq:model_ra_op_prob_exp_N}
+% \aligned
+% \mathrm{min}
+% \left\{ 
+% \widehat{f}_{N}(x) =
+% \frac{1}{N} \sum_{i=1}^{N}
+% \left[
+% t + \frac{1}{2-2\beta}( \| S(z,\xi^i) - u_d \|^2_{L^2(D)} - 2t)_+ 
+%   + \frac{\alpha}{2} \| z \|^2_{Z}
+% \right] \text{ over } (z,t) \in \Zad \times \mathbb R 
+% \right\}.
+% \endaligned
+% \end{equation*}
 \item There have been enormous advances in nonlinear programming and numerical PDE-constrained optimization over the past several decades.
+\visible<2->{
 \item \textbf{Pro}: we may use a number of powerful optimization algorithms with convergence theory in a fully continuous setting.
+}
+\visible<3->{
 \item \textbf{Pro}: For a fixed EA of the objective, the stopping criterion can be based on the residual of the first-order system.
+}
+\visible<4->{
 \item \textbf{Pro}: Calculation of the $\omega$-dependent states, adjoint states, and Hessian vector products are parallelizable.
+}
 \end{itemize}
-\end{block}
+\end{exampleblock}
 \end{frame}
-\begin{frame}\frametitle{Cons}
-\begin{block}{}
+
+\begin{frame}\frametitle{Parallelization in Smooth Linear Case}
+\begin{exampleblock}{}
 \begin{itemize}
-\item \textbf{Con}: In contrast to SA-type methods, the convergence theory either works in the fully continuous (pre-EA) or the sample-based deterministic (post-EA) regime. \alert{OPEN PROBLEM}
-\item \textbf{Con}: PDE-constrained optimization problems are large scale, the EA PDE-constrained problems can be significantly larger depending on $N$ even for low stochastic dimension. 
-\item So if we're using second-order information and globalization strategies:\\  \centering How \alert{slow} could such an approach really be?
+% \item Keeping the spacial terms continuous, in an EA setting, e.g., Monte Carlo,  we would need:
+\item Computing the reduced gradient $\nabla J(z)$ when using EA is largely parallelizable.
+\item \textbf{$N$ states solves} (in parallel)
+\[
+\bm A(\xi^i) u = \bm B(\xi^i) z + f(\xi^i) \text{ in } H^{-1}(D)\quad i =1,\dots, N,
+\]
+\item \textbf{$N$ adjoint solves} (in parallel, serial with $i^{th}$ state $u^i$
+\[
+\bm A(\xi^i)^* \lambda = -J'_u(u(\xi^i),z) \text{ in } H^{-1}(D)\quad i =1,\dots, N,
+\]
+% which can also be done in parallel, but only when the $i^{th}$ state solve is available.
+% \item \textbf{$N$ function evaluations}
+% \[
+% \phi'(G(x,\xi^i),\theta,r) \quad i =1,\dots, N
+% \]
+% Recall: $G(x,\xi) = \cJ(S(z,\xi)) - t$.
+\item \textbf{$N$ ``matrix-vector''  products}
+\[
+\bm B ^*(\xi^i) \lambda(\xi^i) \quad i = 1,\dots, N.
+\]
+\item \textbf{$\approx N$ ``axpy's''} for the weighted sum : $\nabla \mathcal{J}(z) = -\frac{1}{N}\sum_{i=1}^N \bm B ^*(\xi^i) \lambda(\xi^i)$
+\item \alert{Don't forget the Riesz maps/proper inner products}!
 \end{itemize}
-\end{block}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}\frametitle{Parallelization in Smooth Linear Case}
+\vspace{-1ex}
+\begin{exampleblock}{}
+\begin{itemize}
+\item For each $\xi = \xi^{1},\dots,\xi^{N}$:
+\item Define the Lagrangian:
+$
+\mathcal{L}(u,x,\lambda) = J(u,z) + \langle \bm A u - [\bm B z + f], \lambda \rangle_{U,U^*}
+$
+\visible<2->{
+\item \textbf{$N$ state solves} $u(\xi)$: $\bm A(\xi) u(\xi) = \bm B(\xi) z + f(\xi)$
+parallel for each $\xi$}
+\visible<3->{
+\item \textbf{$N$ adjoint solves} $\lambda(\xi)$: $\bm A^*(\xi) \lambda(\xi) = -J'_u(u(\xi),z)$
+parallel for each $\xi$, serial in $u(\xi)$}
+\visible<4->{
+\item \textbf{$N$ state sensitivity solves} $w(\xi)$:
+$
+\bm A(\xi) w = \bm B(\xi) [v]_{z}.
+$
+parallel for each $\xi$
+}
+\visible<5->{
+\item \textbf{$N$ adjoints sensitivity solves} $p(\xi)$:
+\[
+\bm A(\xi)^* p(\xi) = \mathcal{L}''_{uu}(u(\xi),z,\lambda(\xi))w - \mathcal{L}''_{uz}(u(\xi),z,\lambda(\xi))v.
+\]
+parallel for each $\xi$, serial in $u(\xi), \lambda(\xi)$ 
+}
+\visible<6->{
+\item \textbf{$\xi$-dependent Hess-vec's}: \vspace{-1ex}
+\[
+H(z,\xi) v = \bm B(\xi)^*p(\xi) - \nabla_{zu} \mathcal{L}(u(\xi),z,\lambda(\xi))w + \nabla_{zz} \mathcal{L}(u(\xi),z,\lambda(\xi)) v.
+\]\vspace{-4ex}
+\item \textbf{aggregate, Riesz maps}.
+}
+\end{itemize}
+\end{exampleblock}
+\end{frame}
+
+
+
+\begin{frame}\frametitle{Disadvantages (Opportunities!)}
+\begin{exampleblock}{}
+\begin{itemize}
+\visible<1->{
+\item \textbf{Con}: In contrast to SA-type methods, the convergence theory either works in the fully continuous (pre-EA) or the sample-based deterministic (post-EA) regime. 
+}
+\visible<2->{
+\item \textbf{Con}: PDE-constrained optimization problems are large scale, the EA PDE-constrained problems can be significantly larger depending on $N$ even for low stochastic dimension. 
+}
+\visible<3->{
+\item \textbf{Con}: Obtaining optimal sample sizes and rates of convergence (even a priori estimates) is challenging 
+}
+\visible<4->{
+\item \textbf{Con}: The complexity of a single iterate can be significantly higher. For true scalability, need parallelization.
+}
+\visible<5->{
+\item \textbf{Con}: Since the Hessian is only implicit, need to use iterative methods, which necessitate the development of preconditioners.
+}
+\visible<6->{
+\item So if we're using second-order information and globalization strategies:\\  \centering How \alert{slow} could such an approach really be?
+}
+\end{itemize}
+\end{exampleblock}
 \end{frame}
 
 \begin{frame}\frametitle{Is linear algebra \textit{\alert{really}} an issue?}
@@ -2142,19 +2676,5 @@ N   &      time(s)      &                 fval  &    nstate &   nadjoint  & nsta
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{frame}{Disadvantages}
-    \begin{itemize}
-        \item Obtaining optimal sample sizes and rates of convergence (even a priori estimates) is challenging; more below.
-        \item More complex algorithms.
-        \item The complexity of a single iterate can be significantly higher.
-        \item For true scalability, need parallelization.
-        \item Since the Hessian is only implicit, need to use iterative methods, which necessitate the development of preconditioners. (Or which there are few available at the moment).
-    \end{itemize}
-\end{frame}
-
-\begin{frame}{Effect of Higher Complexity per Iteration}
-    
-\end{frame}
 
 \end{document}
