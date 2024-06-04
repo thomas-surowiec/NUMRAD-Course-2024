@@ -30,7 +30,8 @@ at (current page.south west)
 \usepackage{cleveref}
 \usepackage{caption}
 \usepackage{graphicx} % Allows including images
-\usepackage{subfig}
+% \usepackage{subfig}
+\usepackage{subcaption}
 \usepackage{booktabs} % Allows the use of \toprule, \midrule and  \bottomrule in tables
 \usepackage{svg} %allows using svg figures
 \usepackage{tikz}
@@ -77,6 +78,9 @@ at (current page.south west)
 \newcommand{\cR}{\mathcal{R}}
 \newcommand{\cJ}{\mathcal{J}}
 \newcommand{\cG}{\mathcal{G}}
+\newcommand{\cU}{\mathcal{U}}
+\newcommand{\cX}{\mathcal{X}}
+\newcommand{\cZ}{\mathcal{Z}}
 \newcommand{\CVaR}{\textup{CVaR}}
 \newcommand{\D}{\textup{ d}}
 \newcommand{\dd}{\mathrm{d}}
@@ -186,36 +190,52 @@ Incorporating uncertainty into this workflow adds several new tasks:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}\frametitle{}
+\begin{center}\Large
+Modeling: Deterministic and stochastic settings.
+\end{center}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Modeling}
 \begin{frame}\frametitle{Choosing the right PDE and Objective}
 
 \begin{example}[Optimization of Optoelectronics]
-We need a model that accounts for...
-\begin{itemize}
-\item ...elasticity of the structure (linear elasticity)
-\item ...optical properties (Helmholtz and photon number equation)
-\item ...electronic properties (van Roosbroeck)
-\end{itemize}
-coupled by the layout of the materials Ge, Si, SiN, SiO$_4$, air (decision variables). \medskip
-\visible<2->{
-\begin{columns}[onlytextwidth,T]
-\column{0.6\textwidth}\vspace{1mm}
-The objective function should simultaneously ensure...
-\begin{itemize}
-\item ...tensile strain inside Ge-region is maximized 
-\item ...bulk of support of (at least) first eigenmode
-\end{itemize}
-coincide.
-      
-\column{0.4\textwidth}
-  {\centering
-     \vspace{1ex}
-      \includegraphics[width=0.7\linewidth]{Part I/figures/graphical_abstract_ieee.jpeg}
-      }
-\end{columns}
-}
+\centering
+      \includegraphics[width=0.6\linewidth]{Part I/figures/graphical_abstract_ieee.jpeg}
 \end{example}
 \end{frame}
+
+% \begin{frame}\frametitle{Choosing the right PDE and Objective}
+% \begin{example}[Optimization of Optoelectronics]
+% We need a model that accounts for...
+% \begin{itemize}
+% \item ...elasticity of the structure (linear elasticity)
+% \item ...optical properties (Helmholtz and photon number equation)
+% \item ...electronic properties (van Roosbroeck)
+% \end{itemize}
+% coupled by the layout of the materials Ge, Si, SiN, SiO$_4$, air (decision variables). \medskip
+% \visible<2->{
+% \begin{columns}[onlytextwidth,T]
+% \column{0.6\textwidth}\vspace{1mm}
+% The objective function should simultaneously ensure...
+% \begin{itemize}
+% \item ...tensile strain inside Ge-region is maximized 
+% \item ...bulk of support of (at least) first eigenmode
+% \end{itemize}
+% coincide.
+      
+% \column{0.4\textwidth}
+%   {\centering
+%      \vspace{1ex}
+%       \includegraphics[width=0.7\linewidth]{Part I/figures/graphical_abstract_ieee.jpeg}
+%       }
+% \end{columns}
+% }
+% \end{example}
+% \end{frame}
 
 % \begin{frame}\frametitle{What is the right PDE model for my application?}
 %  \includegraphics[width=\linewidth]{report/pics/schema3.jpg}
@@ -238,8 +258,10 @@ coincide.
 \begin{example}[Optimization of Optoelectronics]
 \begin{itemize}
 \item What is the simplest effective model?
-\item Optimizing only considering elasticity and first eigenmode yields:
+\visible<2->{
+\item Optimizing only considering elasticity and first eigenmode yields:}
 \end{itemize}
+\visible<2->{
 \begin{figure}
 \centering
 \includegraphics[width=0.3\linewidth]{Part I/figures/topo_FINAL_color.png}
@@ -247,6 +269,7 @@ coincide.
 \caption{\footnotesize Optimal material layout (l.) and its corresponding strain field (r.).}
 \label{Figure phi}
 \end{figure}
+}
 \end{example}
 \end{frame}
 
@@ -273,16 +296,14 @@ Even if I know the ``true'' model, do I...
 \item ...know all the real input parameters?
 \item ...have I estimated them from data? 
 \end{itemize}
-\visible<2->{
 \begin{itemize}
 \item What if I don't fully \textbf{trust} the ``true'' model? 
-\item Can I use a simpler model by replacing the inputs with \textbf{random parameters} after \textbf{learning} their distributions from \textbf{data}?
+% \item Can I use a simpler model by replacing the inputs with \textbf{random parameters} after \textbf{learning} their distributions from \textbf{data}?
 \item We don't wish to \alert{quantify uncertainty}, but \alert{make optimal decisions} in the face of uncertainty.
 \end{itemize}
-}
 \end{exampleblock}
 
-\visible<3->{
+\visible<2->{
 \begin{exampleblock}{}
 \centering
 These thoughts lead to the focus of our course:\\ \textbf{Optimizing PDEs with Random Inputs.}
@@ -295,9 +316,20 @@ These thoughts lead to the focus of our course:\\ \textbf{Optimizing PDEs with R
 % \centering 
 % Aside from the PDEs, bound constraints present further difficulties.
 % \end{exampleblock}
+
+
+\visible<1->{
+\begin{exampleblock}{}
+\begin{itemize}
+\item Topology optimization: 
+$z$ $\sim$ material density (takes values between 0,1), 
+$\int_{D} z \ \mathrm{d}x \le \gamma$.
+\item State constraint: $T$ max.\ allowable deflection, temperature, current, etc.
+\end{itemize}
+\end{exampleblock}
+}
 \visible<2->{
 \begin{exampleblock}{}
-\visible<2->{
 Domain $D \subset \mathbb R^n$ open, bounded;
 $a, b, T : D \to \mathbb R$ $a < b$;
 $\Phi : Z \to \mathbb R$, $\gamma \in \mathbb R$.
@@ -310,7 +342,7 @@ a(x) \le z(x) \le b(x) \text{ for a.e. } x \in D
 \quad\quad
 \Phi(z) \le \gamma.
 \]
-}\vspace{-4ex}
+\vspace{-4ex}
 \visible<3->{
 \item State constraints: \textbf{solutions} $u$ of PDE $u : D \to \mathbb R$ must fulfill 
 \[
@@ -322,17 +354,6 @@ u(x) \le T \text{ for a.e. } x \in D.
 \end{itemize}
 \end{exampleblock}
 }
-\visible<4->{
-\begin{exampleblock}{}
-\begin{itemize}
-\item Topology optimization: 
-$z$ $\sim$ material density, 
-$a \equiv 0$, $b \equiv 1$, 
-$\Phi(z) = \int_{D} z \ \mathrm{d}x$.
-\item State constraint: $T$ max.\ allowable deflection, temperature, current, etc.
-\end{itemize}
-\end{exampleblock}
-}
 \end{frame}
 
 \begin{frame}\frametitle{How are my decision spaces restricted?}
@@ -341,30 +362,47 @@ After incorporating uncertainty:
 \begin{itemize}
 \item The decision/design/control $z : D \to \mathbb R$ is made \textbf{before the realization of of uncertainty}.
 \item The state is a \textbf{random element} $u : (\Omega,\mathcal{F},\mathbb P) \to X(D)$; $X(D)$ function space over $D$.
+\visible<2->{
+\item If we consider a time-dependent decision-making process, then $z_t : D \to \mathbb R$ may become uncertain. Think: feedback control.}
+\visible<3->{
+\item State constraints in a random setting can be very challenging: See Caroline Geiersbach's presentation!
+}
 \end{itemize}
 \end{exampleblock}
-\visible<2->{
-\begin{example}[Stochastic State Constraints]
-\begin{itemize}
-\item Option A: $p \in (0,1)$ 
-\[
-\varphi(u) := \mathbb P( \left\{\omega \in \Omega \left| u(x,\omega) \le T(x) \text{ a.e. x} \in D\right.\right\}) \ge p.
-\] 
-\item Option B: $p = 1$
-\[
-\mathbb P( \left\{\omega \in \Omega \left| u(x,\omega) \le T(x) \text{ a.e. x} \in D\right.\right\}) = 1.
-\] 
-\end{itemize}
-\begin{itemize}
-    \item Option A is mathematically hard: continuity, differentiability of $\varphi$ nontrivial
-    \item Option B is closer to deterministic case. Probably too restrictive.
-    % \item Plenty of ongoing work, see reference list.
-\end{itemize}
-\end{example}
-}
+% \visible<3->{
+% \begin{center}
+%     \begin{minipage}{0.25\textwidth}
+% \includegraphics[width=\linewidth]{figures/z_my_1000.pdf}
+% \end{minipage}
+% \begin{minipage}{0.25\textwidth}
+% \includegraphics[width=\linewidth]{figures/oos_my_g1000_M2000.pdf}
+% \end{minipage}
+% \end{center}
+% \begin{figure}
+%      \centering
+%      \begin{subfigure}[b]{0.5\linewidth}
+%          \centering
+% %         \includegraphics[width=\textwidth]{graph3}
+%           \includegraphics[width=\linewidth]{figures/z_my_1000.pdf}
+%          \caption{}
+%          \label{fig:opt-ctrl}
+%      \end{subfigure}
+%      \begin{subfigure}[b]{0.5\linewidth}
+%      \centering
+%      \includegraphics[width=\linewidth]{figures/oos_my_g1000_M2000.pdf}
+%      \caption{}
+%      \label{fig:oos-states}
+%  	\end{subfigure}
+%   \caption{}
+%   %       \caption{ (a) Optimal solution $\overline{z}$. (b) Controlled states using $\overline{z}$ for 2000 out of sample instances of $\bm\xi$.
+%   % 2.3 \% of cases violate the bound.}
+%         \label{fig:saa-ssn}
+% \end{figure}
+% }
+
 \end{frame}
 
-\begin{frame}\frametitle{What exactly would I like to optimize?}
+\begin{frame}\frametitle{Choosing an Objective}
 
 \only<1>{
 \begin{example}[Optimization of Optoelectronics]
@@ -416,24 +454,24 @@ Using \textbf{random PDE}, means our objective becomes \textbf{implicitly random
 \item $\rho$ cost or regularization term.
 \end{itemize}
 \end{exampleblock}
-\only<2>{
-\begin{exampleblock}{}
-\centering Since $\mathcal{J}(S(z))(\omega)$ is a random variable, this problem doesn't make sense yet.
-\end{exampleblock}}
-\only<3>{
-\begin{exampleblock}{}
-\centering What does it mean if my objective is a random variable? 
-\end{exampleblock}
-}
-\only<4>{
-\begin{exampleblock}{}
-\centering What can I hope to achieve?
-\end{exampleblock}
-}
+% \only<2>{
+% \begin{exampleblock}{}
+% \centering Since $\mathcal{J}(S(z))(\omega)$ is a random variable, this problem doesn't make sense yet.
+% \end{exampleblock}}
+% \only<3>{
+% \begin{exampleblock}{}
+% \centering What does it mean if my objective is a random variable? 
+% \end{exampleblock}
+% }
+% \only<4>{
+% \begin{exampleblock}{}
+% \centering What can I hope to achieve?
+% \end{exampleblock}
+% }
 \end{frame}
 
-\begin{frame}\frametitle{Understanding OUU. An Example}
-\begin{example}{}
+\begin{frame}\frametitle{Understanding OUU. An Example.}
+\begin{exampleblock}{}
 \begin{itemize}
 \item $f(x,\omega) := \frac{1}{2}(\alpha_1(\omega) x_1^2 + \alpha_2(\omega) x_2^2) - (\beta_1(\omega) x_1 + \beta_2(\omega) x_2).$
 \item $\alpha_i \sim U(0,1)$, $\beta_i \sim N(0,1)$ for $i=1,2$.
@@ -441,46 +479,169 @@ Using \textbf{random PDE}, means our objective becomes \textbf{implicitly random
 $
 \min_{x \in \mathbb R^2 } \mathbb E[f(x)]
 $
-has unique solution $(x^{\star}_1,x^{\star}_2) = (0,0)$. Thus, $f(x^{\star},\cdot)$ is a degenerate r.v.
-\item Solving iteratively, the sample cdf's converge as expected:
-%\begin{figure}
-%\qquad
-\begin{center}
-\includegraphics[width=0.5\textwidth, keepaspectratio]{Part I/figures/empirical_cdfs_obj.pdf}
-\end{center}
+has unique solution $(x^{\star}_1,x^{\star}_2) = (0,0)$. 
+\item $f(x^{\star},\cdot)$ is a degenerate r.v.: $\mathbb P(\left\{\omega \in \Omega \; \left| f(x^{\star},\omega) = 0\right.\right\}) = 1$
 \end{itemize}
-\end{example}
+\begin{center}
+    \begin{minipage}{0.6\textwidth}
+        Solving iteratively, the sample cdf's converge:
+    \end{minipage}
+    \begin{minipage}{5cm}
+        \includegraphics[width=\textwidth, keepaspectratio]{Part I/figures/empirical_cdfs_obj.pdf}
+    \end{minipage}
+\end{center}
+
+\end{exampleblock}
 \end{frame}
 
-\begin{frame}\frametitle{New: How can I model my risk preferences in this setting?}
-\begin{block}{}
+\begin{frame}\frametitle{Shaping the Distribution}
+\begin{exampleblock}{}
 \begin{itemize}
-\item This is an extreme example. 
-\item But it illustrates the point: We choose the \textbf{numerical surrogate for risk} that \textbf{shapes the distribution} of the random variable
+% \item This is an extreme example. 
+\item We choose a \textbf{numerical surrogate for risk} that \textbf{shapes the distribution} of
 \[
-X_{z^{\star}}(\omega) := \mathcal{J}(S(z^{\star}))(\omega) + \rho(z^{\star})
+X_{z^{\star}}(\omega) := \mathcal{J}(S(z^{\star}))(\omega) + \rho(z^{\star}).
 \] 
-in a desired way.
-\item For example, if $X_{z} \ge a$ for all $z \in \Zad$, then ideally the length of the interval $[a,F_{X_{z^{\star}}}^{-1}(0.95)]$ is as small as possible.
+\item E.g., if $X_{z} \ge a$ for all $z \in \Zad$, then  $|F_{X_{z^{\star}}}^{-1}(0.95)-a|$ should be small.
 \item $F_{X_{z^{\star}}}^{-1}(0.95)$ is the upper 95\% quantile of $X_{z^{\star}}$.
 \[
 F_{X_{z^{\star}}}^{-1}(0.95) := \inf \{ \alpha : \mathbb P(X_{z^{\star}} \le \alpha ) \ge 0.95 \}
 \]
 \end{itemize}
-\end{block}
-\begin{block}{}
+\end{exampleblock}
+\begin{exampleblock}{}
 \centering
-We go into more detail below in Section 2. 
 For now, we will consider the objectives $\risk[\mathcal{J}(S(z))]$ and specify $\risk$ later.
-\end{block}
+\end{exampleblock}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\begin{frame}\frametitle{}
+\begin{center}\Large
+Examples: Making the discussion concrete.
+\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Examples}
+
+\begin{frame}\frametitle{Ex: A Contaminant Mitigation Problem}
+\begin{exampleblock}{}
+\smaller
+Find optimal placement of mitigating factors $z$ by solving:
+\begin{equation*}\label{eq:optprob_ex2}
+  \min_{z\in\Zad}\left\{
+    {\color{blue}\risk}\left[\frac{\kappa_s}{2}\int_{D} S(z)^2\,\mathrm{d}x\right]
+       + \kappa_c \|z\|_1\right\}
+\end{equation*}
+where
+ $\kappa_s = 10^5$, $\kappa_c =1$ and $S(z) = u:\Omega\to H^1(D)$ solves
+the weak form of
+\begin{align*}
+  -\nabla\cdot(\alert{\epsilon(\omega)}\nabla u) + \alert{\mathbb{V}(\omega)}\cdot\nabla u
+    &= \alert{f(\omega)} - Bz &\quad\text{in $D$, a.s.}\\
+  u &=0 &\quad \text{on $\Gamma_d = \{0\}\times(0,1)$, a.s.} \\
+ \alert{ \epsilon(\omega)}\nabla u\cdot n &= 0 &\quad\text{on $\partial D\setminus\Gamma_d$, a.s.}
+\end{align*}
+\begin{itemize}\vspace*{-3ex}
+\item $D = (0,1)^2$ is the physical domain, $(\Omega,\mathcal{F}, \bbp)$ complete probability space
+\item $\mathcal{Z}$ is the control space, e.g., $L^2(D)$ or $\mathbb R^n$; $\Zad = \{z\in \mathcal{Z}\,\vert\,0\le z\le 1\}$.
+\item $u$ is the advected pollutant.
+\item $\risk : \mathcal{X} \to \overline{\mathbb R}$ is a numerical surrogate for ``risk'', i.e., a risk measure.
+\end{itemize}
+Random inputs: $\alert{\epsilon, \mathbb V, f}$ permeability, wind, sources of contaminant.
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}\frametitle{Ex: Topology Optimization}
+
+\begin{exampleblock}{}
+\smaller
+Find an optimal material distribution $z^{\star}$ that minimizes compliance by solving
+      \[
+      \min_{z \in \Zad}\;
+         {\color{blue}\risk}\left[
+            \int_D \alert{F(\cdot)}\cdot S(z)\,\mathrm{d}x\right] + \wp(z)
+      \]
+      where $S(z)=u$ solves \vspace{-1ex}
+      \begin{align*}
+        -\nabla\cdot(\alert{\mathbf{E}(\omega)}(z):\epsilon u)
+            =&\; \alert{F(\omega)} &&\text{in }D\textcolor{white}{.} \\
+        \epsilon u =&\;
+           \tfrac{1}{2}(\nabla u + \nabla u^\top)
+           &&\text{in }D\textcolor{white}{.}\\
+         u =&\; \alert{g}(\omega) &&\text{on }\partial D
+      \end{align*}
+and the material density $z \in \Zad$ fulfills 
+\begin{itemize}
+\item $z : D \to \mathbb R$.
+\item $z(x) \in [0,1]$ a.e.\ on $D$ ($z = 0$ ``no material'', $z = 1$ ``material'').
+\item  $\int_D z\,\mathrm{d}x \le V_{\textup{\tiny 0}}|D|$ (volume fraction).
+\end{itemize}
+ 
+Random inputs: Linear elastic isotropic material with \alert{uncertain}
+Lam\'e coefficients $\alert{\mathbf{E}}$
+traction forces $\alert{g}$ 
+ bulk forces $\alert{F}$.
+
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}\frametitle{Ex: Chemical Vapor Deposition}
+\begin{exampleblock}{}
+\smaller
+\begin{minipage}{0.29\textwidth}
+  \centering
+    \begin{tikzpicture}[scale=2.2]
+      \node[inner sep=0pt] (result) at (0.5,0.5)
+        {\includegraphics[width=0.72\textwidth]{Part I/figures/mean_uncontrolled_velocity_vort.pdf}};
+      \draw[line width=1pt] (0,0) rectangle (1,1) node[pos=0.5] {$D$};
+      \draw[line width=1pt, blue] (0,1) parabola bend (1/6,19/18) (1/3,1);
+      \draw[line width=1pt, blue] (1/3,1) parabola bend (1/2,8/9) (2/3,1) node[above, xshift=-0.4cm] {In/Outflow};
+      \draw[line width=1pt, blue] (2/3,1) parabola bend (5/6,19/18) (1,1);
+      \draw[line width=1.5pt, red] (0,0) -- (1,0) node[below left, xshift=-0.3cm] {Substrate};
+      \draw[line width=1.5pt, black!70!green] (0,0) -- (0,1) node[left, xshift=-0.3cm, yshift=-0.5cm, rotate=90] {Control};
+      \draw[line width=1.5pt, black!70!green] (1,0) -- (1,1) node[right, xshift=0.3cm, yshift=-0.5cm, rotate=-90] {Control};
+    \end{tikzpicture}
+\end{minipage}\hfill
+\begin{minipage}{0.65\textwidth}\vspace{-3mm}
+\[
+  \min_{z\in\Zad}\; \frac{1}{2}{\color{blue}\risk}\left[\int_{D} (\nabla\times V(z))
+    \,\mathrm{d}x\right] + \frac{\gamma}{2}\int_{\Gamma_c} |z|^2 \,\mathrm{d}x
+\]
+where $(V(z),P(z),T(z)) = (v,p,\tau)$ solves  \vspace{-1ex}
+\begin{align*}
+  -\alert{\nu(\omega)}\nabla^2 v + (v\cdot\nabla)v + \nabla p
+      + \alert{\eta(\omega)} \tau g &= 0
+    && \text{in }D \\
+ %\nabla \cdot v &= 0 &&\text{in }D\\
+  -\alert{\kappa(\omega)} \Delta \tau + v\cdot\nabla \tau &= 0
+    && \text{in }D\\
+  \alert{\kappa(\omega)} \nabla \tau\cdot n + \alert{h(\omega)}(z-\tau) &=0
+    && \text{on }\Gamma_c
+\end{align*}
+\end{minipage}
+\begin{itemize}
+\item Find an equilibrium boundary temperature $z : \Gamma_c \to \mathbb R$ that minimizes the vorticity in CVD reactor.
+\item $V$ velocity, $P$ pressure, $T$ temperature.
+\item Possible random inputs:  kinematic viscosity $\alert{\nu}$, thermal expansion coefficient  $\alert{\eta}$, thermal conductivity $\alert{\kappa}$,  heat transfer coefficient due to rugosity $\alert{h}$. 
+\end{itemize}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}\frametitle{}
+\begin{center}\Large
+Theory: How to treat random PDEs in practice?
+\end{center}
+\end{frame}
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Theory}
-\begin{frame}\frametitle{What do I know about the forward problem?}
-\begin{block}{}
-In general, the PDE-constraint can be viewed as 
+\begin{frame}\frametitle{PDE constraints}
+\visible<1->{
+\begin{exampleblock}{}
+A PDE-constraint can be viewed as requiring
 \[
 \vspace{-1ex}
 e(u,z) = 0,
@@ -488,35 +649,35 @@ e(u,z) = 0,
 \]
 where
 \begin{itemize}
-\item  $e : U \times Z \to W$,
-\item  $U$ is the state space,
-\item  $Z$ is the control space,
-\item $W$ is typically a less regular space, e.g., the dual space $U^*$.
+\item  $e : U \times Z \to W$
+\item $U$ is the \textbf{state space}, $Z$ is the \textbf{control space}, $W$ is typically the dual space $U^*$.
 \end{itemize}
-\end{block}
-\vspace{-2ex}
-\begin{block}{}
-Much of the literature works under the assumption that 
+\end{exampleblock}
+}
+\visible<2->{
+\begin{exampleblock}{}
 \begin{itemize}
+\item The ``\textbf{reduced space approach}.''
 \item  There exists a continuous, differentiable mapping $z \mapsto S(z)$ such that 
 \[
 e(S(z),z) = 0,
 \]
 so the PDE can be treated implicitly.  
 \item $S$ is often called the ``\textbf{control-to-state mapping.}'' 
-\item \textbf{Reduced space approach}
 \end{itemize}
-\end{block}
+\end{exampleblock}
+}
 \end{frame}
 
-\begin{frame}\frametitle{What do I know about the forward problem?}
-\begin{block}{}
+\begin{frame}\frametitle{What do I know about the PDE?}
+\begin{exampleblock}{}
 \begin{itemize}
 \item $D \subset \mathbb R^n$ open, bounded set with Lipschitz boundary $\Gamma$.
 \item $f \in L^2(D)$, $g \in H^{-1/2}(\Gamma)$, $u_0 \in H^1(\Gamma)$, $\eta > 0$.
 \end{itemize}
-\end{block}
-\begin{example}[Linear Elliptic Boundary Value Problem (Neumann)]
+\end{exampleblock}
+\only<2>{
+\begin{exampleblock}{Linear Elliptic Boundary Value Problem}
 There exists a \textbf{unique solution} $u \in H^1(D)$ that solves the weak form of 
 \[
 \aligned
@@ -524,46 +685,49 @@ There exists a \textbf{unique solution} $u \in H^1(D)$ that solves the weak form
 \partial_{\bm n} u &= g \text{ on } \Gamma&
 \endaligned
 \]
-The mapping $(g,f) \mapsto u$ is \textbf{bounded and linear.}
-\end{example}\pause
-\begin{example}[Nonlinear Boundary Value Problem (Allen-Cahn)]
-There exist \textbf{solutions} $u \in H^1(D)$ of 
+The mapping $(g,f) \mapsto u$ is \textbf{bounded and linear} $\Longrightarrow$ $S(z)$ continuous, differentiable.
+\end{exampleblock}}
+\only<3>{
+\begin{exampleblock}{Nonlinear Boundary Value Problem (Allen-Cahn)}
+There exist \textbf{solution\alert{s}} $u \in H^1(D)$ of 
 \[
 \aligned
 -\Delta u +  u -  u^2 + u^3 &= f \text{ in } D&\\
 \partial_{\bm n} u &= \eta(u - u_{0}) \text{ on } \Gamma&
 \endaligned
 \]
-\end{example}
+$\Longrightarrow$ $S(z)$ is \alert{set-valued}.
+\end{exampleblock}
+}
 \end{frame}
 
-\begin{frame}\frametitle{What do I know about the forward problem?}
-\begin{block}{}
+\begin{frame}\frametitle{What do I know about the PDE?}
+\begin{exampleblock}{}
 \begin{itemize}
-\item Without $S(z)$, theory and algorithmic approaches are more difficult. 
-\item A minimal regularity assumption requires continuous Fr\'echet derivatives $e_u(u^{\star},z^{\star}), e_y(u^{\star},z^{\star})$ exist at a solution pair $(u^{\star},z^{\star})$ and 
-\[
+\item Without single-valued $S(z)$, theory and algorithmic approaches are more difficult. 
+\item \visible<2->{
+\textbf{Full space approach:} Need derivatives $e_u(u^{\star},z^{\star}), e_y(u^{\star},z^{\star})$ at a solution  $(u^{\star},z^{\star})$ and 
+$
 e'(u^{\star},z^{\star}) \text{ is surjective }.
-\]
-\item \textbf{Full space approach}.
+$
+}
 \end{itemize}
-\end{block}
-\begin{block}{}
+\end{exampleblock}
+\visible<3->{
+\begin{exampleblock}{}
 In either case, the workflow becomes 
 \begin{itemize}
 \item Does there exist a well-defined control-to-state mapping $S(z)$?
 \item What regularity does $u$ have? (e.g. $u$ is in $H^1(D)$? $H^2(D)$?)
 \item Is $S$ differentiable? What PDE does $w = S'(u) h$ solve?
 \end{itemize}
-\end{block}
-\begin{block}{}
-\centering We consider more problems in the Examples section below.
-\end{block}
+\end{exampleblock}
+}
 \end{frame}
 
-\begin{frame}\frametitle{What do I know about the forward problem? (New)}
-\begin{block}{}
-After adding random inputs, the general PDE-constraint can be viewed as 
+\begin{frame}\frametitle{Random PDE Constraints}
+\begin{exampleblock}{}
+Adding random inputs, the constraint can be viewed as 
 \[
 e(u,z; \omega) = 0\quad \mathbb P\text{-a.s.}.
 \]
@@ -573,10 +737,25 @@ This adds a few questions to the workflow (assume reduced space approach):
 \item Is $u : (\Omega, \mathcal{F}) \to U$ \textbf{integrable or essentially bounded}?
 \end{itemize}\medskip
 
-The regularity, continuity, and differentiability questions now need to be posed in  \textbf{Lebesgue-Bochner spaces} $L^{p}(\Omega, \mathcal{F}, \mathbb P; V)$.\medskip
+Regularity, continuity, etc. now in \textbf{Lebesgue-Bochner spaces} $L^{p}(\Omega, \mathcal{F}, \mathbb P; U)$.
+\begin{itemize}
+    \visible<2->{
+    \item Lebesgue-Bochner spaces used in parabolic PDEs. Time interval $[0,T]$ is replaced by $\Omega$}
+    \visible<3->{
+    \item $L^{q}(\Omega,\cF,\bbp; U)$ ($q \in [1,\infty)$) (strongly) meas.\ $y : \Omega \to U$:
+$
+\mathbb E_{\bbp}[ \| y \|^{q}_{U} ] < +\infty.  
+$}
+    \visible<4->{
+    \item $L^{\infty}(\Omega,\cF,\bbp; U)$  ess.\ bounded (strongly) meas.\ $y : \Omega \to U$:
+$
+\mathrm{ess\, sup}_{\omega \in \Omega}\| y(\omega) \|_{U}  < +\infty.  
+$
+}
+\end{itemize}
 
-These spaces are typically considered in the context of deterministic parabolic and hypebolic PDEs with time interval $[0,T]$ replacing $\Omega$.
-\end{block}
+
+\end{exampleblock}
 \end{frame}
 
 %\subsection{A Linear Elliptic PDE with Random Inputs}
@@ -584,22 +763,22 @@ These spaces are typically considered in the context of deterministic parabolic 
 
 \begin{frame}\frametitle{A Model Forward Problem}
 %(\textbf{Time: 10 min})
-\begin{block}{Domain and Inputs}
+\begin{exampleblock}{}
 \begin{itemize}
-\item (\textbf{Physical Domain:}) $D \subset \mathbb R^n$ is an open bound subset with sufficiently smooth boundary $\Gamma \subset \mathbb R^n$. 
-\item  (\textbf{Inputs:}) $A: D \to \mathbb S^{n \times n}$, $f: D \to \mathbb R$ are measurable mappings.
-\end{itemize}
-\end{block}
-
-\begin{block}{Data Assumptions}
-\begin{itemize}
-\item (\textbf{Differential Operator:}) For $x \in D$, $A(x) \in \mathbb S^{n\times n}$ satisfies the usual boundedness and uniform ellipticity conditions.
-\item  (\textbf{Forcing Term\footnote{\scriptsize Can be relaxed to, e.g., $f \in H^1(D)^*$ or $f \in H^{-1}(D)$.}:}) $f$ is square-integrable on $D$, i.e., $f \in L^2(D)$.
-\end{itemize}
-\end{block}
-
-\begin{block}{Deterministic Problem}
-Find $u: D \to \mathbb R$ such that
+    \visible<1->{
+    \item \textbf{Physical Domain:} $D \subset \mathbb R^n$ open bounded subset with Lipschitz boundary $\Gamma \subset \mathbb R^n$. 
+    }
+    \visible<2->{
+    \item \textbf{Inputs:} $A: D \to \mathbb S^{n \times n}$, $f: D \to \mathbb R$ are measurable mappings.
+    }
+    \visible<3->{
+    \item  \textbf{Differential Operator:} $A: D \to \mathbb S^{n\times n}$ induces bounded, uniform elliptic operator.
+    }
+    \visible<4->{
+    \item \textbf{Forcing Term:} $f$ is square-integrable on $D$, i.e., $f \in L^2(D)$.
+    }
+    \visible<5->{
+    \item \textbf{Deterministic Problem:} Find $u: D \to \mathbb R$ such that
 \begin{equation}\label{eq:lin_ellip_deter}
 \aligned
 -\mathrm{div\,}\left(A(x) \nabla u(x) \right) 
@@ -608,70 +787,53 @@ u(s)
 &= 0,          &\text{ for } s &\in \Gamma.
 \endaligned
 \end{equation}
-\end{block}
+    }
+\end{itemize}\vspace{-2ex}
+\end{exampleblock}
+
 \end{frame}
 
 \begin{frame}\frametitle{A Model Forward Problem}
-\begin{block}{Deterministic Solution Space, Weak Form}
-\begin{enumerate}
+\begin{exampleblock}{}
+\begin{itemize}
+\visible<1->{
 \item For $u \in C^{\infty}_{c}(D)$, define the norm $\| \cdot \|_{U}$ by
 \[
 \| u \|^2_{U} := \int_{D} \nabla u(x) \cdot \nabla v(x).
 \]
-\textbf{Recall:} The closure of $C^{\infty}_{c}(D)$ w.r.t. $\| \cdot \|_{U}$ is a real separable Hilbert space, usually denoted by $H^1_0(D)$; here, often by $U$.
+\item \textbf{Recall:} Closure of $C^{\infty}_{c}(D)$ w.r.t. $\| \cdot \|_{U}$ is the separable Hilbert space $U := H^1_0(D)$.
+}
+\visible<2->{
 \item For $u, v \in U$, define
 \[
 a(u,v) := \int_{D} A(x) \nabla u(x) \cdot \nabla v(x) \mathrm{d}x,\quad 
 L(v) := \int_{D} f(x) v(x) \mathrm{d}x.
 \]
-\item Consider weak/distributional/variational problem associated with \eqref{eq:lin_ellip_deter}:
+}\vspace{-2ex}
+\visible<3->{
+\item The \textbf{variational form} of \eqref{eq:lin_ellip_deter}:
 Find $u \in U$ such that
 \begin{equation}\label{eq:lin_ellip_deter_weak}
 a(u,v) = L(v),\quad \forall v \in U.
 \end{equation}
-\end{enumerate}
-\end{block}
-\begin{block}{}
-\centering
-A simple application of the Lax-Milgram Lemma shows that \eqref{eq:lin_ellip_deter_weak} admits a unique solution.
-\end{block}
+\item Lax-Milgram provides existence and uniqueness of $u \in U$.
+}
+\end{itemize}
+\end{exampleblock}
 \end{frame}
 
-%\begin{frame}\frametitle{The Lax-Milgram Lemma}
-%\begin{lemma}[Lax-Milgram]
-%Let $V$ be a Hilbert space and $a : V \times V \to \mathbb R$ a bounded, coercive bilinear form. I.e. there exist constants $C, c > 0$ for all $u,v \in V$ such that
-%\begin{itemize}
-%\item $|a(u,v)| \le C \| u \|_{V} \| v \|_{V}$,
-%\item $a(u,v) \ge c\| u \|^2_{V}$.
-%\end{itemize}
-%Then for any $f \in V^*$, the topological dual of $V$, there is a unique solution $u \in V$ to the variational equation:
-%\[
-%a(u,v) = L(v),\quad \forall v \in V
-%\]
-%such that 
-%$
-%\| u \|_{V} \le \frac{1}{c} \| f \|_{V^*}.
-%$
-%\end{lemma}
-%\begin{block}{Remarks}
-%\begin{itemize}
-%\item Both the existence, uniqueness, and bound provided by the Lax-Milgram-Lemma will be crucial for our model PDE with random inputs!
-%\item We typically do not identify a Hilbert space with its dual in optimal control and PDE-constrained optimization, as the Riesz map is generally non-trivial. For $L^2(D)$, however, it is trivial. Therefore, we always take $L^2(D) = (L^2(D))^*$
-%\end{itemize}
-%\end{block}
-%\end{frame}
-
 \begin{frame}\frametitle{A Stochastic Forward Problem}
-\begin{block}{Adding Random Inputs}
+\begin{exampleblock}{}
 \begin{itemize}
-\item (\textbf{Random Domain:}) $\Omega$ is a sample space, $\cF \subset \mathcal{P}(\Omega)$ a $\sigma$-algebra, $\bbp : \cF \to [0,1]$ a probability measure such that $(\Omega, \cF, \bbp)$ is a complete probability space.
-\item  (\textbf{Random Inputs:}) $A: \Omega \to L^{\infty}(D, \mathbb S^{n \times n})$, $f: \Omega \to H^{-1}(D)$ measurable mappings.
-\end{itemize}
-\end{block}\vspace{-1.5mm}
-
-\begin{block}{A Parametric Problem}
-%We define the following parametric variational problem:\\
-Find $u: \Omega \to H^1_0(D)$ such that
+\visible<1->{
+\item \textbf{Random Domain:} $\Omega$ is a sample space, $\cF \subset \mathcal{P}(\Omega)$ a $\sigma$-algebra, $\bbp : \cF \to [0,1]$ a probability measure
+\item $(\Omega, \cF, \bbp)$ is a complete probability space (subsets of null sets are measurable sets).
+}
+\visible<2->{
+\item  \textbf{Random Inputs:} $A: \Omega \to L^{\infty}(D, \mathbb S^{n \times n})$, $f: \Omega \to H^{-1}(D)$ $\cF$-measurable mappings.
+}
+\visible<3->{
+\item \textbf{Parametric Problem:} Find $u: \Omega \to H^1_0(D)$ such that
 \begin{equation}\label{eq:lin_ellip_stoch}
 \aligned
 -\mathrm{div\,}\left(A(\omega,x) \nabla u(\omega,x) \right) 
@@ -681,34 +843,17 @@ u(\omega,s)
 \endaligned
 \end{equation}
 holds for all $\omega \in \Omega$.
-\end{block}\vspace{-1.5mm}
-
-%\begin{block}{Questions}
-%\begin{itemize}
-%\item What is an appropriate way of viewing \eqref{eq:lin_ellip_stoch}?
-%\item What would be the right function space setting?
-%\item What kind of regularity do we require of $A, f$?
-%\end{itemize}
-%\end{block}
+}
+\end{itemize}
+\end{exampleblock}
 \end{frame}
 
 \begin{frame}\frametitle{A Stochastic Forward Problem}
-\vspace{-1ex}
-\begin{block}{Bochner Spaces}
+\begin{exampleblock}{}
 \begin{itemize}
-\item $L^{q}(\Omega,\cF,\bbp; U)$ ($q \in [1,\infty)$) is the space of all (strongly) measurable functions $y : \Omega \to U$:
-\[
-\mathbb E_{\bbp}[ \| y \|^{q}_{U} ] < +\infty.  
-\]
-\item $L^{\infty}(\Omega,\cF,\bbp; U)$  is the space of all bounded (strongly) measurable functions $y : \Omega \to U$:
-\[
-\mathrm{ess\, sup}_{\omega \in \Omega}\| y(\omega) \|_{U}  < +\infty.  
-\]
-\end{itemize}
-\end{block}\pause\vspace{-1ex}
-\begin{block}{Variational Form (Stochastic Case)}
-\begin{itemize}
-\item Let $\cU := L^2(\Omega,\cF,\bbp; U)$, $a : \cU \times \cU \to \mathbb R$, $L : \cU \to \mathbb R$ be defined by
+\visible<1->{
+\item 
+ $\mathcal{U} := L^2(\Omega,\cF,\bbp; U)$. Define $a : \cU \times \cU \to \mathbb R$, $L : \cU \to \mathbb R$
 \[
 \aligned
 \mathbf{a}(u,v) 
@@ -718,13 +863,17 @@ holds for all $\omega \in \Omega$.
 \mathbb E\left[  \int_{D} f(\omega,x) v(\omega,x) \mathrm{d}x \right].
 \endaligned
 \] 
-\item Find $u \in \cU$ such that
+}
+\visible<2->{
+\item \textbf{Variational formulation (random):} Find $u \in \mathcal{U}$ such that
 \begin{equation}\label{eq:weak_stoch}
 \mathbf{a}(u,v)  = \mathbf{L}(v) \quad \forall v \in \cU.
 \end{equation}
-\item If $f \in L^2(\Omega,\cF,\mathbb P; U^*)$, and $\mathbf{a}$ is $\cU$-coercive, then there exists a unique solution $u \in \cU$.
+\item If $f \in L^2(\Omega,\cF,\mathbb P; U^*)$, and $\mathbf{a}$ is \textbf{$\cU$-coercive}, then there exists a unique solution $u \in \cU$.
+\item This is just Lax-Milgram for the Hilbert space $L^2(\Omega,\cF,\mathbb P; U)$.
+}
 \end{itemize}
-\end{block}
+\end{exampleblock}
 \end{frame}
 
 
@@ -776,210 +925,235 @@ holds for all $\omega \in \Omega$.
 
 
 \begin{frame}\frametitle{A Stochastic Forward Problem: Remarks}
-\begin{block}{}
+\begin{exampleblock}{}
 \begin{itemize}
+\visible<1->{
 \item It can be shown that $u \in \cU$ solves \eqref{eq:weak_stoch} if and only if $u(\omega) \in U$ solves \eqref{eq:lin_ellip_stoch} w.p.1.
+}
+\visible<2->{
 \item $u : \Omega \to U$ is measurable and inherits the integrability provided by $A$ and $f$.
+}
+\visible<3->{
 \item With more structure on $A$ and $f$, $u : \Omega \to U$ may even be continuous or smooth.
+}
+\visible<4->{
 \item For optimization or optimal control, we might consider the problem
 \[
 \mathbf{a}(u,v) = \langle \mathbf{B}(\cdot) z, v \rangle + \mathbf{L}(v) \quad \forall v \in \cU,
 \]
 where $B : \Omega \to \mathcal{L}(Z, \cU^*)$ is, e.g., bounded and measurable in $\Omega$.
+}
+\visible<5->{
 \item This defines a continuously Fr\'echet differentiable control-to-state mapping $z \mapsto S(z)$.
+}
 \end{itemize}
-\end{block}
+\end{exampleblock}
 \end{frame}
 
-% \begin{frame}\frametitle{Necessary Assumptions}
-%\begin{block}{}
-%\begin{enumerate}
-%\item
-%\end{enumerate}
-%\end{block}
-%\end{frame}
-%\begin{frame}\frametitle{Existence and Regularity of Solutions}
-%\begin{block}{}
-%\begin{enumerate}
-%\item
-%\end{enumerate}
-%\end{block}
-%\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\subsection{Extensions and Open Problems}
-% \begin{frame}\frametitle{Challenges: Nonlinear and Evolution Equations}
-% \begin{block}{Remarks}
-% \begin{itemize}
-% \item The classical theory yields not only existence and uniqueness of a solution, but also measurability, integrability, etc. for the linear case.
-% \item The situation is more challenging for nonlinear elliptic PDE, e.g., 
-% \begin{equation*}
-% \aligned
-% -\xi(\omega)\Delta u + N(u,\omega)        &= f, \text{ in } D,\text{ a.e. } \omega \in \Omega,\\
-% \xi(\omega) \partial_{\bf n} u &= z,\text{ on } \Gamma,\text{ a.e. } \omega \in \Omega,
-% \endaligned
-% \end{equation*}
-% as there is no general means of obtaining measurability and integrability.
-% \item Problems involving time-dependence, e.g., 
-% \begin{equation*}
-% \aligned
-% \frac{\partial u}{\partial t} -\xi_t(\omega)\Delta u  &= f, \text{ in } D \times (0,T),\text{ a.e. } \omega \in \Omega,\\
-% \xi_t(\omega) \partial_{\bf n} u &= z,\text{ on } \Gamma \times (0,T),\text{ a.e. } \omega \in \Omega,\\
-% u(0) &= u_0
-% \endaligned
-% \end{equation*}
-% present an even greater challenge ($\xi_t$ stochastic process). \alert{(OPEN PROBLEM)!}
-% \end{itemize}
-% \end{block}
-% \end{frame}
 
-% \begin{frame}\frametitle{Why do I think this is a hard problem?}
+
+\begin{frame}\frametitle{Existence of Solutions}
+\begin{exampleblock}{}
+\begin{itemize}
+\item \textbf{Reduced Space:}
+\begin{equation*}\label{eq:rs}
+\min_{z \in \mathcal{Z}_{\rm ad}} \mathcal{J}(z) 
+\end{equation*}
+\item \textbf{Full Space:}
+\begin{equation*}\label{eq:fs}
+\min_{(u,z) \in U \times \mathcal{Z}_{\rm ad}} \left\{ J(u,z) \; \left| \; e(u,z) = 0\right.\right\}.
+\end{equation*}
+% \item  Since we work with academic models, we should at least know that a solution exists.
+\visible<2->{
+\item \textbf{Reduced Space:} Analyze $\mathcal{J}$, $S(z)$, $\cZ_{\rm ad}$, prove existence with the direct method.
+}
+\visible<3->{
+\item \textbf{Full Space:} Similar, but need weak seq.\ compactness of $\left\{ (u,z) \in U \times \cZ_{\rm ad}  \; \left| \; e(u,z) = 0 \right.\right\}$.
+}
+\visible<4->{
+\item \alert{(\textbf{Stochastic Case})}  Weak lsc of $z \mapsto \risk[\cJ(S(z))]$ requires extra steps and assumptions.
+\item Full space stochastic: challenging due to compactness issues.
+}
+\end{itemize}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}\frametitle{Optimality conditions}
+    \begin{exampleblock}{}
+        \begin{itemize}
+            \item Optimality conditions are used in optimization to characterize solutions.
+            \item They also tell us how to build algorithms, or at least when to stop them.
+            \visible<2->{
+            \item \textbf{Reduced Space}: Show that the directional derivative of the reduced objective is non-negative on the cone of feasible directions:
+            \[
+                \cJ'(z^{\star})(z - z^{\star}) \ge 0\quad \forall z \in \cZ_{\rm ad}.
+            \]
+            }\vspace{-4ex}
+            \visible<3->{
+            \item \textbf{Full Space}: Use optimization theory. Requires \textbf{constraint qualifications}:
+            \[
+            \aligned
+            J'_z(u^{\star},z^{\star}) + e'_{z}(u^{\star},z^{\star})^*\lambda^{\star} + \mathcal{N}_{\cZ_{\rm ad}}(z^{\star}) &\ni 0\\
+            e(u^{\star},z^{\star}) &= 0\\
+            e'_{u}(u^{\star},z^{\star})^*\lambda^{\star} + J'_{u}(u^{\star},z^{\star}) &= 0
+            \endaligned
+            \]
+            }\vspace{-2ex}
+            \visible<4->{
+            \item \alert{(\textbf{Stochastic Case})} Need directional differentiability of $z \mapsto \risk[\cJ(S(z))]$.
+            \item Full space stochastic: challenging restrictions from CQs.
+}
+        \end{itemize}
+    \end{exampleblock}
+\end{frame}
+
+% \begin{frame}\frametitle{How can I characterize the solutions? }
 % \begin{block}{}
 % \begin{itemize}
-% \item If $z$ is \alert{not a static decision} variable, but \alert{time-dependent}, then other than $z(0)$, the controls need to be adapted to the underlying stochastic process $\xi_t$.
-% \item As more information is revealed in time, $z(t)$ will be dependent on the realization of stochasticity in the time $0 < s < t$.
-% \item This usually leads to \textbf{dynamic programming} problems, which even in finite dimensions suffer from the \alert{curse of dimensionality}.
-% \item Now, $z$ depends on \textbf{time} $t$, \textbf{uncertainty} $\omega$, \textbf{space} $x \in D$ or $s \in \Gamma$. This only deepens the curse.
-% \item \textbf{Open loop} and \textbf{multistage} perspectives are also possible, as has been done in stochastic programming for decades, but what does it mean in this context?
-% \end{itemize}
-% \end{block}\pause
-
-% \begin{example}[A thought experiment]
-% \begin{itemize}
-% \item Suppose $z^{\star}$ should give us an optimal policy for drug administration based on a stochastic tumor growth model.
-% \item If $z^{\star}_{t}(\omega) \in L^2(\Gamma)$ is the optimal control, how do I know what to do?
-% \item Should I (assuming I could) blindly administer whatever a sample path of this process tells me?
-% \end{itemize}
-% \end{example}
-
-% \end{frame}
-
-\begin{frame}\frametitle{Does my mathematical model possess a solution?}
-\begin{block}{}
-\begin{itemize}
-\item In the deterministic setting, we are usually confronted with problems of the type:
-\begin{equation}\label{eq:rs}\tag{Reduced Space}
-\min_{z \in \mathcal{Z}_{\rm ad}} \mathcal{J}(z) 
-\end{equation}
-or 
-\begin{equation}\label{eq:fs}\tag{Full Space}
-\min_{(u,z) \in U \times \mathcal{Z}_{\rm ad}} \left\{ J(u,z) \; \left| \; e(u,z) = 0\right.\right\}.
-\end{equation}
-\item  We work with academic models of real phenomena, we should know that a solution $z^{\star}$ exists.\pause
-\item (\textbf{Reduced Space})\\ 
--Prove that $\cJ : \cZ_{\rm ad} \to \mathbb R$ is weakly lower semicontinuous,\\
--$\cZ_{\rm ad}$ nonempty, weakly sequentially closed,\\
--$\mathrm{lev}_{\alpha} \cJ \cap \cZ_{\rm ad}$  is weakly sequentially compact for some $\alpha \in \cJ(z_0)$ with $z_0 \in \cZ_{\rm ad}$.\pause
-\item (\textbf{Full Space})\\
-- Do essentially the same but over feasible set $\left\{ (u,z) \in U \times \cZ_{\rm ad}  \; \left| \; e(u,z) = 0 \right.\right\}$\pause
-\item \alert{(\textbf{Stochastic Case})}\\
-- Reduced Space: Weak lsc of $z \mapsto \risk[\cJ(S(z))]$ requires extra steps and assumptions.\\
--  Full Space: Potentially more challenging due to compactness issues...I haven't tried.
-\end{itemize}
-\end{block}
-\end{frame}
-\begin{frame}\frametitle{How can I characterize the solutions? }
-\begin{block}{}
-\begin{itemize}
-\item As in all branches of optimization, we characterize solutions using optimality conditions.
-\item There are several ways of doing this for PDE-constrained optimization depending on whether the reduced space or full space approach is considered.\pause
-\item (\textbf{Reduced Space})\\ 
--Prove that $\cJ : \cZ \to \mathbb R$ is G\^{a}teaux differentiable,\\
--Assuming $\cZ_{\rm ad}$ nonempty, closed, and convex, we have
-\[
-\cJ'(z^{\star})(z - z^{\star}) \ge 0\quad \forall z \in \cZ_{\rm ad}.
-\]
-- Using adjoints (see page 32), ``unfold'' this into a set of of equations and inequalities in $z^{\star}, u^{\star} = S(z^{\star})$ and $\lambda^{\star}$ (adjoint state).\\
-- Generally requires \textbf{implicit function theorem} to differentiate $S$ at $z^{\star}$.
-\pause
-\item (\textbf{Full Space})\\
-- Uses optimization theory in Banach spaces. \\
-- Requires \textbf{constraint qualifications} (as usual in optimization) to guarantee existence of Lagrange multipliers, e.g., \textbf{$e'(u^{\star},z^{\star})$ is surjective}.
+% \item As in all branches of optimization, we characterize solutions using optimality conditions.
+% \item There are several ways of doing this for PDE-constrained optimization depending on whether the reduced space or full space approach is considered.\pause
+% \item (\textbf{Reduced Space})\\ 
+% -Prove that $\cJ : \cZ \to \mathbb R$ is G\^{a}teaux differentiable,\\
+% -Assuming $\cZ_{\rm ad}$ nonempty, closed, and convex, we have
+% \[
+% \cJ'(z^{\star})(z - z^{\star}) \ge 0\quad \forall z \in \cZ_{\rm ad}.
+% \]
+% - Using adjoints (see page 32), ``unfold'' this into a set of of equations and inequalities in $z^{\star}, u^{\star} = S(z^{\star})$ and $\lambda^{\star}$ (adjoint state).\\
+% - Generally requires \textbf{implicit function theorem} to differentiate $S$ at $z^{\star}$.
+% \pause
+% \item (\textbf{Full Space})\\
+% - Uses optimization theory in Banach spaces. \\
+% - Requires \textbf{constraint qualifications} (as usual in optimization) to guarantee existence of Lagrange multipliers, e.g., \textbf{$e'(u^{\star},z^{\star})$ is surjective}.
 %\pause
 %\item \alert{(\textbf{Stochastic Case})}\\
 %- Reduced Space: Weak lsc of $z \mapsto \risk[\cJ(S(z))]$ requires extra steps and assumptions.\\
 %-  Full Space: Potentially more challenging due to compactness issues...I haven't tried.
-\end{itemize}
-\end{block}
-\end{frame}
+% \end{itemize}
+% \end{block}
+% \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Algorithms and Numerical Solution}
-\begin{frame}\frametitle{How can I solve the optimization problem numerically?}
-\begin{block}{}
-As mentioned above, there are two approaches
-\begin{itemize}
-\item Reduced space approach
-\item Full space approach
-\end{itemize}
-\end{block}
 
-\begin{block}{}\centering
-We highlight the main points for the \textbf{deterministic reduced space} approach.
-\end{block}
-
-\begin{block}{}\centering
-The full space approach is especially important for PDEs with non-unique solutions, e.g., stationary Allen-Cahn (p. 17 above).
-\end{block}
+\begin{frame}\frametitle{}
+\begin{center}\Large
+Algorithms and Numerical Solution
+\end{center}
 \end{frame}
 
-\begin{frame}\frametitle{Reduced space approach}
-\begin{block}{}
+% \begin{frame}\frametitle{How can I solve the optimization problem numerically?}
+% \begin{block}{}
+% As mentioned above, there are two approaches
+% \begin{itemize}
+% \item Reduced space approach
+% \item Full space approach
+% \end{itemize}
+% \end{block}
+
+% \begin{block}{}\centering
+% We highlight the main points for the \textbf{deterministic reduced space} approach.
+% \end{block}
+
+% \begin{block}{}\centering
+% The full space approach is especially important for PDEs with non-unique solutions, e.g., stationary Allen-Cahn (p. 17 above).
+% \end{block}
+% \end{frame}
+
+\begin{frame}\frametitle{Two essential computations}
+\begin{exampleblock}{}
 \begin{itemize}
-\item The PDE is now implicitly satisfied. 
-\item There may still exist control and state constraints.
-\item The PDE-constraint is formulated in function spaces $U, Z, W$, which are typically Hilbert spaces; in some settings general Banach spaces.
-\item Efficient algorithms need to be ``aware'' of the original function spaces:
-\begin{enumerate}
-\item Inner products, dual norms, etc. should be implemented with the proper discrete counterpart.
-\item Gradients/Hessians of the objective, constraints, and solution operators should be calculated using the associated discrete Riesz mappings.
-\end{enumerate}
-\item This ensures (usually) \textbf{mesh independent} behavior and proper \textbf{scaling} by mesh refinements.
+\item How do we efficiently \textbf{compute gradients} in the reduced space setting?
+\item How do we efficiently \textbf{compute Hessian-vector products} in the reduced space setting?
+% \item The PDE is now implicitly satisfied. 
+% \item There may still exist control and state constraints.
+% \item The PDE-constraint is formulated in function spaces $U, Z, W$, which are typically Hilbert spaces; in some settings general Banach spaces.
+% \item Efficient algorithms need to be ``aware'' of the original function spaces:
+% \begin{enumerate}
+% \item Inner products, dual norms, etc. should be implemented with the proper discrete counterpart.
+% \item Gradients/Hessians of the objective, constraints, and solution operators should be calculated using the associated discrete Riesz mappings.
+% \end{enumerate}
+% \item This ensures (usually) \textbf{mesh independent} behavior and proper \textbf{scaling} by mesh refinements.
 \end{itemize}
-\end{block}
+\end{exampleblock}
+
+\visible<2->{
+\begin{exampleblock}{}
+\begin{itemize}
+    \item We only discuss the deterministic case.
+    % \item These are essential for all competitive optimization algorithms.
+    \item The \textbf{Hessian} is \alert{never} available, but \textbf{Hessian-vector products} allow us to apply \textbf{Newton's method} and its variants.
+\end{itemize}
+\end{exampleblock}
+}
 \end{frame}
 
-\begin{frame}\frametitle{Reduced space approach}
-\begin{example}[Gradient Computation of $\mathcal{J}(S(z)) = J(S(z),z)$]
+\begin{frame}\frametitle{Computing the Gradient}
+\begin{exampleblock}{}
 \begin{itemize}
-\item Given $z \in Z$, calculate \textbf{state} $u = S(z)$ by solving $e(u,z) = 0$. \pause
-\item Given $u$, solve \textbf{adjoint equation} for $\lambda = P(z)$: $e_{u}(u,z)^* \lambda = -J'_u(u,z)$.\pause
+\visible<1->{
+\item Given $z \in Z$, calculate \textbf{state} $u = S(z)$ by solving $e(u,z) = 0$.
+}
+\visible<2->{
+\item Given $u$, solve \textbf{adjoint equation} for $\lambda = P(z)$: $e_{u}(u,z)^* \lambda = -J'_u(u,z)$.
+}
+\visible<3->{
 \item Given $z,u,\lambda$ calculate the full gradient 
 \[
 \nabla \mathcal{J}(z) = e_{z}(u,z)^* \lambda + \nabla J_u(u,z).\pause
-\]\vspace{-4ex}
-\item The latter might require an additional solve to ensure that the true discrete gradient is being using. (More in Part II.)\pause
-\item In the linear case, we only require the solution of several (typically) \textbf{sparse structured linear} systems to determine $\nabla \mathcal{J}$.\pause
-\item Without the use of \textbf{adjoints}, the gradient would contain large dense matrices associated with the solution operators $S, P$.
+\]
+}\vspace{-3ex}
+\visible<4->{
+\item This might require an additional solve for the true discrete gradient.
+}
+\visible<5->{
+\item In the linear case, we only require the solution of \textbf{sparse structured linear} systems for $\nabla \mathcal{J}$.
+}
+\visible<6->{
+\item Without \textbf{adjoints}, $\nabla \mathcal{J}$ would contain \alert{large dense matrices} due to the solution operators $S, P$.
+}
 \end{itemize}
-\end{example}
+\end{exampleblock}
 \end{frame}
 
-\begin{frame}\frametitle{Reduced space approach}
-\begin{example}[Hessian Computation of $\mathcal{J}(S(z)) = J(S(z),z)$]
+\begin{frame}\frametitle{Hessian-Vector Products}
+\begin{exampleblock}{}
 \begin{itemize}
+\visible<1->{
 \item Define the Lagrangian $L(u,z,\lambda)$:
-\[
+$
 L(u,z,\lambda) = J(u,z) + \langle e(u,z), \lambda \rangle_{W,W^*}
-\]
-\item \pause Given $z \in Z$, calculate $u = S(z)$ by solving $e(u,z) = 0$. \pause
-\item Given $u$, solve the adjoint equation for $\lambda = P(z)$: $e_{u}(u,z)^* \lambda = -J'_u(u,z)$\pause
-\item Given $u,z$, direction $v$, solve the \textbf{linearized state equation} for $w$:
+$
+}
+\visible<2->{
+\item Given $z \in Z$, calculate $u = S(z)$ by solving $e(u,z) = 0$.
+}
+\visible<3->{
+\item Given $u$, solve the adjoint equation for $\lambda = P(z)$: $e_{u}(u,z)^* \lambda = -J'_u(u,z)$
+}
+\visible<4->{
+\item Given $u,z$, direction $v$, solve the \textbf{state sensitivity equation} for $w$:
 \[
 e_u(u,z) w = e_z(u,z)v.
 \]
-\item \pause  Given $u,z,\lambda,w,v$ solve the \textbf{adjoint equation} for $p$:
+}\vspace{-4ex}
+\visible<5->{
+\item  Given $u,z,\lambda,w,v$ solve the \textbf{adjoint sensitivity equation} for $p$:
 \[
 e_{u}(u,z)^* p = L''_{uu}(u,z,\lambda)w - L''_{uz}(u,z,\lambda)v.
 \]
-\item \pause Given $u,z,\lambda,w,v,p$ yields
+}\vspace{-4ex}
+\visible<6->{
+\item Given $u,z,\lambda,w,v,p$ yields
 \[
 \nabla^2 \mathcal{J}(z) v = e_{z}(u,z)^*p - \nabla_{zu} L(u,z,\lambda)w + \nabla_{zz} L(u,z,\lambda) v.
-\]
+\]\vspace{-4ex}
+}
 \end{itemize}
-\end{example}
+\end{exampleblock}
 \end{frame}
 
 \begin{frame}\frametitle{New: How should I treat uncertainty numerically?}
@@ -1029,11 +1203,12 @@ We discuss the pros and cons in detail in Part II of the course.
 \end{frame}
 
 
-\begin{frame}\frametitle{New: How should I treat uncertainty numerically?}
-\begin{block}{}
+\begin{frame}\frametitle{Stopping Criteria}
+\begin{exampleblock}{}
 \begin{itemize}
-\item Knowing \textbf{when} to stop with \textbf{sample-before-you-go} is easy: Use the usual stopping criteria from nonlinear programming.
-\item E.g. Check the relative change in the residual of the first-order system: Define
+\item \textbf{When} to stop with \textbf{sample-before-you-go}: Use optimality conditions.
+\visible<2->{
+\item Define
 \[
 \mathrm{res}_k := z_{k} - \mathrm{Proj}_{\Zad}(z_{k} - \mathbb E_{\bbp_{N}}\left[\cJ(S(z_{k}))\right])
 \]
@@ -1043,127 +1218,32 @@ and stop when
 \le
 \tau_{\rm rel}\| \mathrm{res}_{0} \| + \tau_{\rm abs},
 \]
-where $\tau_{\rm rel}$ and $\tau_{\rm abs}$ are absolute and relative tolerances, respectively.
-\pause
+where $\tau_{\rm rel} > 0$ and $\tau_{\rm abs} > 0$ are absolute and relative tolerances, respectively.
+}
+\visible<3->{
 \item Knowing \textbf{when} to stop the \textbf{sample-as-you-go} algorithms is more difficult.
-\item The  basic convergence theory usually only provides statements on the objective functions. More  comments in Part II. \pause
+}
+\visible<4->{
+\item The  basic convergence theory usually only provides statements on the objective functions. 
+}
+\visible<5->{
 \item In \alert{both} settings, the ``solution'' $z^{\star}(\bbp_{N})$ is \alert{dependent on the realization of random processes}. 
-\item Ideally, we would know what happens to $z^{\star}(\mathbb P_{N})$ as $N \to +\infty$. More comments in Part II.
+}
+\visible<6->{
+\item Ideally, we would know what happens to $z^{\star}(\mathbb P_{N})$ as $N \to +\infty$. More on this later...
+}
 \end{itemize}
-\end{block} 
+\end{exampleblock} 
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Examples}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Examples}
-
-\begin{frame}\frametitle{Example: A Contaminant Mitigation Problem}
-\begin{block}{}
-Find optimal placement of mitigating factors $z$ by solving:
-\begin{equation*}\label{eq:optprob_ex2}
-  \min_{z\in\Zad}\left\{
-    {\color{blue}\risk}\left[\frac{\kappa_s}{2}\int_{D} S(z)^2\,\mathrm{d}x\right]
-       + \kappa_c \|z\|_1\right\}
-\end{equation*}
-where
- $\kappa_s = 10^5$, $\kappa_c =1$ and $S(z) = u:\Omega\to H^1(D)$ solves
-the weak form of
-\begin{align*}
-  -\nabla\cdot(\alert{\epsilon(\omega)}\nabla u) + \alert{\mathbb{V}(\omega)}\cdot\nabla u
-    &= \alert{f(\omega)} - Bz &\quad\text{in $D$, a.s.}\\
-  u &=0 &\quad \text{on $\Gamma_d = \{0\}\times(0,1)$, a.s.} \\
- \alert{ \epsilon(\omega)}\nabla u\cdot n &= 0 &\quad\text{on $\partial D\setminus\Gamma_d$, a.s.}
-\end{align*}
-\begin{itemize}\vspace*{-3ex}
-\item $D = (0,1)^2$ is the physical domain, $(\Omega,\cF, \bbp)$ complete probability space
-\item $\cZ$ is the control space, e.g., $L^2(D)$ or $\mathbb R^n$; $\Zad = \{z\in \cZ\,\vert\,0\le z\le 1\}$.
-\item $u$ is the advected pollutant.
-\item $\risk : \cX \to \overline{\mathbb R}$ is a numerical surrogate for ``risk'', i.e., a risk measure.
-\end{itemize}
-Random inputs: $\alert{\epsilon, \mathbb V, f}$ permeability, wind, sources of contaminent.
-\end{block}
-\end{frame}
-
-\begin{frame}\frametitle{Example: Topology Optimization}
-
-\begin{block}{}
-Find an optimal material distribution $z^{\star}$ that minimizes compliance by solving
-      \[
-      \min_{z \in \Zad}\;
-         {\color{blue}\risk}\left[
-            \int_D \alert{F(\cdot)}\cdot S(z)\,\mathrm{d}x\right] + \wp(z)
-      \]
-      where $S(z)=u$ solves \vspace{-1ex}
-      \begin{align*}
-        -\nabla\cdot(\alert{\mathbf{E}(\omega)}(z):\epsilon u)
-            =&\; \alert{F(\omega)} &&\text{in }D\textcolor{white}{.} \\
-        \epsilon u =&\;
-           \tfrac{1}{2}(\nabla u + \nabla u^\top)
-           &&\text{in }D\textcolor{white}{.}\\
-         u =&\; \alert{g}(\omega) &&\text{on }\partial D
-      \end{align*}
-and the material density $z \in \Zad$ fulfills 
-\begin{itemize}
-\item $z : D \to \mathbb R$.
-\item $z(x) \in [0,1]$ a.e.\ on $D$ ($z = 0$ ``no material'', $z = 1$ ``material'').
-\item  $\int_D z\,\mathrm{d}x \le V_{\textup{\tiny 0}}|D|$ (volume fraction).
-\end{itemize}
- 
-Random inputs: Linear elastic isotropic material with \alert{uncertain}
-Lam\'e coefficients $\alert{\mathbf{E}}$
-traction forces $\alert{g}$ 
- bulk forces $\alert{F}$.
-
-\end{block}
-\end{frame}
-
-\begin{frame}\frametitle{Example: Optimization of Chemical Vapor Deposition}
-\begin{block}{}
-\begin{minipage}{0.29\textwidth}
-  \centering
-    \begin{tikzpicture}[scale=2.2]
-      \node[inner sep=0pt] (result) at (0.5,0.5)
-        {\includegraphics[width=0.72\textwidth]{mean_uncontrolled_velocity_vort}};
-      \draw[line width=1pt] (0,0) rectangle (1,1) node[pos=0.5] {$D$};
-      \draw[line width=1pt, blue] (0,1) parabola bend (1/6,19/18) (1/3,1);
-      \draw[line width=1pt, blue] (1/3,1) parabola bend (1/2,8/9) (2/3,1) node[above, xshift=-0.4cm] {In/Outflow};
-      \draw[line width=1pt, blue] (2/3,1) parabola bend (5/6,19/18) (1,1);
-      \draw[line width=1.5pt, red] (0,0) -- (1,0) node[below left, xshift=-0.3cm] {Substrate};
-      \draw[line width=1.5pt, black!70!green] (0,0) -- (0,1) node[left, xshift=-0.3cm, yshift=-0.5cm, rotate=90] {Control};
-      \draw[line width=1.5pt, black!70!green] (1,0) -- (1,1) node[right, xshift=0.3cm, yshift=-0.5cm, rotate=-90] {Control};
-    \end{tikzpicture}
-\end{minipage}\hfill
-\begin{minipage}{0.65\textwidth}\vspace{-3mm}
-\[
-  \min_{z\in\Zad}\; \frac{1}{2}{\color{blue}\risk}\left[\int_{D} (\nabla\times V(z))
-    \,\mathrm{d}x\right] + \frac{\gamma}{2}\int_{\Gamma_c} |z|^2 \,\mathrm{d}x
-\]
-where $(V(z),P(z),T(z)) = (v,p,\tau)$ solves  \vspace{-1ex}
-\begin{align*}
-  -\alert{\nu(\omega)}\nabla^2 v + (v\cdot\nabla)v + \nabla p
-      + \alert{\eta(\omega)} \tau g &= 0
-    && \text{in }D \\
- %\nabla \cdot v &= 0 &&\text{in }D\\
-  -\alert{\kappa(\omega)} \Delta \tau + v\cdot\nabla \tau &= 0
-    && \text{in }D\\
-  \alert{\kappa(\omega)} \nabla \tau\cdot n + \alert{h(\omega)}(z-\tau) &=0
-    && \text{on }\Gamma_c
-\end{align*}
-\end{minipage}
-\begin{itemize}
-\item Find an equilibrium boundary temperature $z : \Gamma_c \to \mathbb R$ that minimizes the vorticity in CVD reactor.
-\item $V$ velocity, $P$ pressure, $T$ temperature.
-\item Possible random inputs:  kinematic viscosity $\alert{\nu}$, thermal expansion coefficient  $\alert{\eta}$, thermal conductivity $\alert{\kappa}$,  heat transfer coefficient due to rugosity $\alert{h}$. 
-\end{itemize}
-\end{block}
-\end{frame}
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Risk-Averse Decision Making}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}\frametitle{}
@@ -1172,13 +1252,6 @@ Section 2: \\
 Risk-Averse Decision Making 
 \end{center}
 \end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Risk-Averse Decision Making}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1366,77 +1439,77 @@ t + \frac{1}{1-\beta} \mathbb E[(X - t)_+]\
 % \end{frame}
 
 
-\begin{frame}\frametitle{Distributional Robustness and CVaR}
-\begin{exampleblock}{}
-\begin{itemize}
-\item Return to risk neutral case $\risk = \mathbb E$. \alert{$\bbp$ is unknown}, but an iid sample is available.
-\item  We could use the \textbf{empirical probability measure} $\mathbb P_N$ and consider
-\[
-\min_{z \in \Zad} \wp(z) + \frac{1}{N} \sum_{i=1}^{N} \cJ(S(z))(\omega^i).
-\]
-\item This is a risk-neutral formulation, but expect \alert{overfitting}.
-\item We could \alert{incorporate risk aversion} by defining a set of measures 
-$
-\mathfrak{A} \subset \mathcal{P}(\Omega),
-$
-where $\mathcal{P}(\Omega)$ is the set of all Borel probability measures over $(\Omega,\cF)$, that contains $\mathbb P_{N}$.
-\item A robust data-driven formulation would then be
-\[
-\min_{z \in \Zad} \wp(z) + \sup_{\mathbb Q \in \mathfrak{A}}\mathbb E_{\mathbb Q}\left[ \cJ(S(z))\right].
-\]
-\end{itemize}
-\end{exampleblock}
-\end{frame}
+% \begin{frame}\frametitle{Distributional Robustness and CVaR}
+% \begin{exampleblock}{}
+% \begin{itemize}
+% \item Return to risk neutral case $\risk = \mathbb E$. \alert{$\bbp$ is unknown}, but an iid sample is available.
+% \item  We could use the \textbf{empirical probability measure} $\mathbb P_N$ and consider
+% \[
+% \min_{z \in \Zad} \wp(z) + \frac{1}{N} \sum_{i=1}^{N} \cJ(S(z))(\omega^i).
+% \]
+% \item This is a risk-neutral formulation, but expect \alert{overfitting}.
+% \item We could \alert{incorporate risk aversion} by defining a set of measures 
+% $
+% \mathfrak{A} \subset \mathcal{P}(\Omega),
+% $
+% where $\mathcal{P}(\Omega)$ is the set of all Borel probability measures over $(\Omega,\cF)$, that contains $\mathbb P_{N}$.
+% \item A robust data-driven formulation would then be
+% \[
+% \min_{z \in \Zad} \wp(z) + \sup_{\mathbb Q \in \mathfrak{A}}\mathbb E_{\mathbb Q}\left[ \cJ(S(z))\right].
+% \]
+% \end{itemize}
+% \end{exampleblock}
+% \end{frame}
 
-\begin{frame}\frametitle{Distributional Robustness and CVaR}
-\begin{exampleblock}{}
-\centering 
- What is the ``\alert{correct}'' set $\mathfrak{A}$?
-\end{exampleblock}
-\visible<2->{
-\begin{exampleblock}{Examples}
-\begin{itemize}
-\item Let $\mathfrak{F}$ be a subset of integrands $f: \Omega \to \mathbb R$. 
-\item For $\varepsilon > 0$
-\[
-\mathfrak{A} := \left\{ \mathbb Q \in \mathcal{P}(\Omega) : \sup_{f \in \mathfrak{F}} \left| \mathbb E_{\mathbb P_{N}}[f] - \mathbb E_{\mathbb Q}[f]\right| \le \varepsilon
-\right\}
-\]
-\item Depending $\mathfrak{F}$ this is, e.g., a Wasserstein-1, Fortet-Mourier, or bounded Lipschitz metric.
-\item Without further insight, it is hard to see how this connects back to the theory of risk measures.
-\item The metrics do have the advantage that the support (atoms) can be moved.  
-\item The more tractable metrics, e.g., Wasserstein, are defined with integrands that have very little to do with the original integrand $\cJ(S(z))$.
-\end{itemize}
-\end{exampleblock}
-}
-\end{frame}
+% \begin{frame}\frametitle{Distributional Robustness and CVaR}
+% \begin{exampleblock}{}
+% \centering 
+%  What is the ``\alert{correct}'' set $\mathfrak{A}$?
+% \end{exampleblock}
+% \visible<2->{
+% \begin{exampleblock}{Examples}
+% \begin{itemize}
+% \item Let $\mathfrak{F}$ be a subset of integrands $f: \Omega \to \mathbb R$. 
+% \item For $\varepsilon > 0$
+% \[
+% \mathfrak{A} := \left\{ \mathbb Q \in \mathcal{P}(\Omega) : \sup_{f \in \mathfrak{F}} \left| \mathbb E_{\mathbb P_{N}}[f] - \mathbb E_{\mathbb Q}[f]\right| \le \varepsilon
+% \right\}
+% \]
+% \item Depending $\mathfrak{F}$ this is, e.g., a Wasserstein-1, Fortet-Mourier, or bounded Lipschitz metric.
+% \item Without further insight, it is hard to see how this connects back to the theory of risk measures.
+% \item The metrics do have the advantage that the support (atoms) can be moved.  
+% \item The more tractable metrics, e.g., Wasserstein, are defined with integrands that have very little to do with the original integrand $\cJ(S(z))$.
+% \end{itemize}
+% \end{exampleblock}
+% }
+% \end{frame}
 
-\begin{frame}\frametitle{Distributional Robustness and CVaR}
-\vspace{-1ex}
-\begin{exampleblock}{}
-\begin{itemize}
-\item Using convex analysis, it can be shown in general that
-$
-\CVaR{\beta}[X] = \sup_{\vartheta \in \mathfrak{A}} \mathbb E_{\mathbb P}[\vartheta X],
-$
-where 
-\[
-\mathfrak{A} = \left\{\vartheta \in L^{\infty}(\Omega,\cF,\bbp) \; \left| \; \mathbb E_{\mathbb P}[\vartheta] = 1,\quad 0 \le \vartheta \le \frac{1}{1-\beta} \quad \mathbb P\textrm{-a.s.}\right.\right\}
-\]
-\item For $\bbp = \bbp_N$ we have
-$
-\mathfrak{A} = \left\{ \vartheta \in \mathbb R^{N} \; \left| \; \sum_{i=1}^{N} \frac{\vartheta_i}{N} = 1,\quad 0 \le \vartheta_i \le \frac{1}{1-\beta} \quad i=1,\dots,N \right.\right\}.
-$
-\item This implies 
-\[
-\CVaR{\beta}[X] = \sup_{\vartheta}\left\{ \frac{1}{N} \sum_{i=1}^{N} \vartheta_i X(\omega^i) :  \sum_{i=1}^{N} \frac{\vartheta_i}{N} = 1,\quad 0 \le \vartheta_i \le \frac{1}{1-\beta} \quad i=1,\dots,N\right\}
-\]
-\item CVaR can therefore be used in a data-driven distributionally robust setting.
-\item The original weights on $\mathbb P_N$ are readjusted to  $\vartheta_i/N$. 
-\item Our risk preference, expressed by $\CVaR{\beta}$, determines a meaningful set of probability measures.
-\end{itemize}
-\end{exampleblock}
-\end{frame}
+% \begin{frame}\frametitle{Distributional Robustness and CVaR}
+% \vspace{-1ex}
+% \begin{exampleblock}{}
+% \begin{itemize}
+% \item Using convex analysis, it can be shown in general that
+% $
+% \CVaR{\beta}[X] = \sup_{\vartheta \in \mathfrak{A}} \mathbb E_{\mathbb P}[\vartheta X],
+% $
+% where 
+% \[
+% \mathfrak{A} = \left\{\vartheta \in L^{\infty}(\Omega,\cF,\bbp) \; \left| \; \mathbb E_{\mathbb P}[\vartheta] = 1,\quad 0 \le \vartheta \le \frac{1}{1-\beta} \quad \mathbb P\textrm{-a.s.}\right.\right\}
+% \]
+% \item For $\bbp = \bbp_N$ we have
+% $
+% \mathfrak{A} = \left\{ \vartheta \in \mathbb R^{N} \; \left| \; \sum_{i=1}^{N} \frac{\vartheta_i}{N} = 1,\quad 0 \le \vartheta_i \le \frac{1}{1-\beta} \quad i=1,\dots,N \right.\right\}.
+% $
+% \item This implies 
+% \[
+% \CVaR{\beta}[X] = \sup_{\vartheta}\left\{ \frac{1}{N} \sum_{i=1}^{N} \vartheta_i X(\omega^i) :  \sum_{i=1}^{N} \frac{\vartheta_i}{N} = 1,\quad 0 \le \vartheta_i \le \frac{1}{1-\beta} \quad i=1,\dots,N\right\}
+% \]
+% \item CVaR can therefore be used in a data-driven distributionally robust setting.
+% \item The original weights on $\mathbb P_N$ are readjusted to  $\vartheta_i/N$. 
+% \item Our risk preference, expressed by $\CVaR{\beta}$, determines a meaningful set of probability measures.
+% \end{itemize}
+% \end{exampleblock}
+% \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1586,84 +1659,84 @@ $M_h$ is the mass matrix associated with the discrete $L^2$-inner product.
 \end{example}
 \end{frame}
 
-\begin{frame}\frametitle{Using the Correct Discrete Gradients}
-\begin{example}[]
-\begin{itemize}
-\item \visible<1->{
-Suppose $f : L^2(D) \to \mathbb R$ is defined
-\[
-f(u) := 
-\frac{1}{2}\int_{\Omega} ( L(\xi(\omega)) u, u )_{L^2(D)} \, \mathrm{d} \mathbb P(\omega),
-\]
-where $\xi : (\Omega, \mathcal{F}, \mathbb P) \to \mathbb R^d$ is a random vector.}
-\item \visible<2->{Given an iid sample $\xi^1,\dots,\xi^N$ we would use
-$
-f_N(u) := \frac{1}{2N} \sum_{i=1}^N ( L(\xi^i) u, u )_{L^2(D)}.
-$
-% in \textbf{empirical approximations} of $\mathbb P$.
-}
-\item \visible<3->{The correct fully discrete gradient would then be \vspace{-1ex}
-\[
-\mathfrak{R}_{L^2}(f_{N,h}'(\mathbf{u}_h)) = \frac{1}{N} \sum_{i=1}^N M_h^{-1} L^{i}_h \mathbf{u}_h,
-\vspace{-1ex}
-\]
-where 
-$
-\mathbf{u}^T_h L^i_h \mathbf{u}_h = ( L(\xi^i) u_h, u_h)_{L^2(D)}.
-$
-}
-\end{itemize}
-\end{example}
-\end{frame}
+% \begin{frame}\frametitle{Using the Correct Discrete Gradients}
+% \begin{example}[]
+% \begin{itemize}
+% \item \visible<1->{
+% Suppose $f : L^2(D) \to \mathbb R$ is defined
+% \[
+% f(u) := 
+% \frac{1}{2}\int_{\Omega} ( L(\xi(\omega)) u, u )_{L^2(D)} \, \mathrm{d} \mathbb P(\omega),
+% \]
+% where $\xi : (\Omega, \mathcal{F}, \mathbb P) \to \mathbb R^d$ is a random vector.}
+% \item \visible<2->{Given an iid sample $\xi^1,\dots,\xi^N$ we would use
+% $
+% f_N(u) := \frac{1}{2N} \sum_{i=1}^N ( L(\xi^i) u, u )_{L^2(D)}.
+% $
+% % in \textbf{empirical approximations} of $\mathbb P$.
+% }
+% \item \visible<3->{The correct fully discrete gradient would then be \vspace{-1ex}
+% \[
+% \mathfrak{R}_{L^2}(f_{N,h}'(\mathbf{u}_h)) = \frac{1}{N} \sum_{i=1}^N M_h^{-1} L^{i}_h \mathbf{u}_h,
+% \vspace{-1ex}
+% \]
+% where 
+% $
+% \mathbf{u}^T_h L^i_h \mathbf{u}_h = ( L(\xi^i) u_h, u_h)_{L^2(D)}.
+% $
+% }
+% \end{itemize}
+% \end{example}
+% \end{frame}
 
-\begin{frame}\frametitle{Using the Correct Discrete Gradients}
-\begin{exampleblock}{}
-\begin{itemize}
-\item A fully discrete problem  would take the form:
-\begin{equation}\label{eq:mesh_dep}
-\min_{x \in X^h_{\rm ad}} f_h(x_h) + \Phi_{h,N}(F_{h,N}(x_h)) \text{ over } x_h \in X_h.
-\end{equation}
-\item \visible<2->{$h$ denotes dependence on mesh or scale, $N$ is the sample size.
-%\item Alternative stochastic approximation/SA approaches are also possible.\pause
-}
-\item \visible<3->{However, solvers based solely on $n$-dim algorithms applied to \eqref{eq:mesh_dep}
-% miss important underlying structure and 
- are usually \textbf{mesh dependent}.} 
-\item \visible<4->{This can be a result either of using\\
-- $\mathfrak{R}_{\rm Riesz} = \rm{Id}_{\mathbb R^n}$ or\\ 
-- Not actually having the required differentiability properties in the fully continuous setting.}
-\item \visible<5->{The \textbf{former} means we have \alert{poor scaling} and require \alert{more iterations} than necessary.}
-\item 
-\visible<6->{The latter means the \textbf{discrete derivatives} (gradients, Hessians) \alert{do not} correspond to an infinite dimensional counterpart.}
-%, see e.g.,
-%\item See more in:
-%\textit{Mesh Dependence in PDE-Constrained Optimisation:
-%An Application in Tidal Turbine Array Layouts}
-%
-%by T.\ Schwedes, D.\ A.\ Ham, S.\ W.\ Funke, M.\ D.\ Piggott
-\end{itemize}
-\end{exampleblock}
-\end{frame}
+% \begin{frame}\frametitle{Using the Correct Discrete Gradients}
+% \begin{exampleblock}{}
+% \begin{itemize}
+% \item A fully discrete problem  would take the form:
+% \begin{equation}\label{eq:mesh_dep}
+% \min_{x \in X^h_{\rm ad}} f_h(x_h) + \Phi_{h,N}(F_{h,N}(x_h)) \text{ over } x_h \in X_h.
+% \end{equation}
+% \item \visible<2->{$h$ denotes dependence on mesh or scale, $N$ is the sample size.
+% %\item Alternative stochastic approximation/SA approaches are also possible.\pause
+% }
+% \item \visible<3->{However, solvers based solely on $n$-dim algorithms applied to \eqref{eq:mesh_dep}
+% % miss important underlying structure and 
+%  are usually \textbf{mesh dependent}.} 
+% \item \visible<4->{This can be a result either of using\\
+% - $\mathfrak{R}_{\rm Riesz} = \rm{Id}_{\mathbb R^n}$ or\\ 
+% - Not actually having the required differentiability properties in the fully continuous setting.}
+% \item \visible<5->{The \textbf{former} means we have \alert{poor scaling} and require \alert{more iterations} than necessary.}
+% \item 
+% \visible<6->{The latter means the \textbf{discrete derivatives} (gradients, Hessians) \alert{do not} correspond to an infinite dimensional counterpart.}
+% %, see e.g.,
+% %\item See more in:
+% %\textit{Mesh Dependence in PDE-Constrained Optimisation:
+% %An Application in Tidal Turbine Array Layouts}
+% %
+% %by T.\ Schwedes, D.\ A.\ Ham, S.\ W.\ Funke, M.\ D.\ Piggott
+% \end{itemize}
+% \end{exampleblock}
+% \end{frame}
 
-\begin{frame}\frametitle{Using the Correct Discrete Gradients}
-\begin{example}[Scaling]
-\begin{itemize}
-\item Clearly $u \equiv 0 \in L^2(D)$ minimizes $f(u) = \frac{1}{2} \| u \|^2_{L^2(D)}$.
-\item Likewise 
-$\bm u_h = 0 \in \mathbb R^n$ minimizes 
-$f_h(\bm u_h) = \frac{1}{2} \bm u_h^T M_h \bm u_h$.
-\item Using the correct discrete gradients to minimize $f_h$ with a simple steepest descent approach yields
-\[
-\bm u_{h,k+1} = (1-\alpha_k) \bm u_{u,k}.
-\]
-\item  This involves a strongly convex quadratic objective
-\item We can determine $\alpha_k$ by an exact line search. 
-\item This (regardless of $u_0$) yields $\alpha_1 = 1$!  The algorithm will stop in one iteration.
-\item If the \textbf{incorrect discrete gradient} is used, then this will 
-\alert{not be the case}. Try it at home.
-\end{itemize}
-\end{example}
-\end{frame}
+% \begin{frame}\frametitle{Using the Correct Discrete Gradients}
+% \begin{example}[Scaling]
+% \begin{itemize}
+% \item Clearly $u \equiv 0 \in L^2(D)$ minimizes $f(u) = \frac{1}{2} \| u \|^2_{L^2(D)}$.
+% \item Likewise 
+% $\bm u_h = 0 \in \mathbb R^n$ minimizes 
+% $f_h(\bm u_h) = \frac{1}{2} \bm u_h^T M_h \bm u_h$.
+% \item Using the correct discrete gradients to minimize $f_h$ with a simple steepest descent approach yields
+% \[
+% \bm u_{h,k+1} = (1-\alpha_k) \bm u_{u,k}.
+% \]
+% \item  This involves a strongly convex quadratic objective
+% \item We can determine $\alpha_k$ by an exact line search. 
+% \item This (regardless of $u_0$) yields $\alpha_1 = 1$!  The algorithm will stop in one iteration.
+% \item If the \textbf{incorrect discrete gradient} is used, then this will 
+% \alert{not be the case}. Try it at home.
+% \end{itemize}
+% \end{example}
+% \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}\frametitle{}
@@ -1905,45 +1978,45 @@ $t^{\star}$ is the left-side $\beta$-quantile of $F_{X}$, i.e., $t^{\star} = F_{
 }
 \end{frame}
 
-\begin{frame}\frametitle{Does this really matter? An example.}
-\vspace{-2ex}
+% \begin{frame}\frametitle{Does this really matter? An example.}
+% \vspace{-2ex}
 
-\begin{exampleblock}{}
-\smaller
-\begin{itemize}
-\item $\gamma_k = c/\sqrt{k}$ $c =1e4$. Different $c$ values yield similar behavior.
-\item \textbf{iter}: number of SA-iterations.%, \textbf{state}: no.\ of state solves, \textbf{adjoint}: no.\ of adjoint solves
-\item \textbf{fval}: function value.
-\item \textbf{abs-err} $f$: absolute error of objective function values.
-\item \textbf{rel-err} $f$: relative error of objective function values.
-\item \textbf{abs-err} $x_k$: absolute error in discrete $L^2$-norm of iterate from ``true'' solution
-\item \textbf{rel-err} $x_k$: relative error in discrete $L^2$-norm of iterate from ``true'' solution.
-\end{itemize}
-\end{exampleblock}
+% \begin{exampleblock}{}
+% \smaller
+% \begin{itemize}
+% \item $\gamma_k = c/\sqrt{k}$ $c =1e4$. Different $c$ values yield similar behavior.
+% \item \textbf{iter}: number of SA-iterations.%, \textbf{state}: no.\ of state solves, \textbf{adjoint}: no.\ of adjoint solves
+% \item \textbf{fval}: function value.
+% \item \textbf{abs-err} $f$: absolute error of objective function values.
+% \item \textbf{rel-err} $f$: relative error of objective function values.
+% \item \textbf{abs-err} $x_k$: absolute error in discrete $L^2$-norm of iterate from ``true'' solution
+% \item \textbf{rel-err} $x_k$: relative error in discrete $L^2$-norm of iterate from ``true'' solution.
+% \end{itemize}
+% \end{exampleblock}
 
-%The attached figure plots the relative objective function and control errors.  You can see that the objective function error seems to follow the expected 1/sqrt(N) trend.  The controls are more like 1/N^{1/8}.
-%
-%By the way, the SAA objective value is 0.0448535424.
-\vspace{-1ex}
-\visible<2->{
-\begin{exampleblock}{}
-\smaller
-\begin{table}[]
-\begin{tabular}{|c|c|c|c|c|c|c|}
-\hline
-iter  & time(s) & fval & abs-err $f$  & rel-err $f$  & abs-err $x_k$  &  rel-err $x_k$ \\
-\hline
-100         &  1.4     &   3.1274e-01 &   1.3403e-01 &    7.4999e-01 &   2.7098e+02  &  8.3928e-01\\
-1000        & 14.7    & 2.5017e-01   & 7.1464e-02   &  3.9989e-01  &  2.0949e+02  &  6.4885e-01 \\
-10000      & 152.0   &  2.0502e-01  &  2.6312e-02   &  1.4723e-01  &  1.4802e+02  &  4.5846e-01\\
-100000    & 2054.2   &  1.8906e-01  &  1.0353e-02  &   5.7933e-02  &  1.0943e+02  &  3.3892e-01\\
-\alert{1000000}  & 104636.2  &   1.8411e-01 &   5.3994e-03 &    3.0213e-02 &   8.8822e+01 &   \alert{2.7510e-01}\\
-\hline
-\end{tabular}
-\end{table}\vspace{-1ex}
-Objective errors based on 100,000 samples that are different from those used for SAA and SA.
-\end{exampleblock}}
-\end{frame}
+% %The attached figure plots the relative objective function and control errors.  You can see that the objective function error seems to follow the expected 1/sqrt(N) trend.  The controls are more like 1/N^{1/8}.
+% %
+% %By the way, the SAA objective value is 0.0448535424.
+% \vspace{-1ex}
+% \visible<2->{
+% \begin{exampleblock}{}
+% \smaller
+% \begin{table}[]
+% \begin{tabular}{|c|c|c|c|c|c|c|}
+% \hline
+% iter  & time(s) & fval & abs-err $f$  & rel-err $f$  & abs-err $x_k$  &  rel-err $x_k$ \\
+% \hline
+% 100         &  1.4     &   3.1274e-01 &   1.3403e-01 &    7.4999e-01 &   2.7098e+02  &  8.3928e-01\\
+% 1000        & 14.7    & 2.5017e-01   & 7.1464e-02   &  3.9989e-01  &  2.0949e+02  &  6.4885e-01 \\
+% 10000      & 152.0   &  2.0502e-01  &  2.6312e-02   &  1.4723e-01  &  1.4802e+02  &  4.5846e-01\\
+% 100000    & 2054.2   &  1.8906e-01  &  1.0353e-02  &   5.7933e-02  &  1.0943e+02  &  3.3892e-01\\
+% \alert{1000000}  & 104636.2  &   1.8411e-01 &   5.3994e-03 &    3.0213e-02 &   8.8822e+01 &   \alert{2.7510e-01}\\
+% \hline
+% \end{tabular}
+% \end{table}\vspace{-1ex}
+% Objective errors based on 100,000 samples that are different from those used for SAA and SA.
+% \end{exampleblock}}
+% \end{frame}
 
 \begin{frame}\frametitle{Does this really matter? An example.}
 \begin{exampleblock}{}\centering
